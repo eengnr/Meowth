@@ -6,7 +6,8 @@ from meowth import errors
 def is_owner_check(ctx):
     author = ctx.author.id
     owner = ctx.bot.config['master']
-    return author == owner
+    coowner = ctx.bot.config['comaster']
+    return author == owner or author in coowner
 
 def is_owner():
     return commands.check(is_owner_check)
