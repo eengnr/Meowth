@@ -2,8 +2,11 @@
 [![PyPI](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-364/)
 [![PyPI](https://img.shields.io/badge/support-discord-lightgrey.svg)](https://discord.gg/hhVjAN8)
 
-# Meowth
-A Discord helper bot for Pokemon Go communities.
+# Meowth fork for PoGo Munich Discord server
+
+Translation to German and many adaptions to allow bot owners more flexibility without guild manager rights.
+
+Original README.md below:
 
 Meowth is a Discord bot written in Python 3.6.1+ built with [discord.py v1.0.0a (rewrite branch)](https://github.com/Rapptz/discord.py/tree/rewrite)
 
