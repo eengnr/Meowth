@@ -150,43 +150,43 @@ def sanitize_channel_name(name):
 
 async def get_raid_help(prefix, avatar, user=None):
     helpembed = discord.Embed(colour=discord.Colour.lighter_grey())
-    helpembed.set_author(name="Raid Coordination Help", icon_url=avatar)
+    helpembed.set_author(name="Anleitung für Raids", icon_url=avatar)
     helpembed.add_field(
-        name="Key",
-        value="<> denote required arguments, [] denote optional arguments",
+        name="Legende",
+        value="<> gibt benötigte Werte an, [] gibt optionale Werte an",
         inline=False)
     helpembed.add_field(
-        name="Raid MGMT Commands",
+        name="Kommandos für Raids",
         value=(
-            f"`{prefix}raid <species>`\n"
-            f"`{prefix}weather <weather>`\n"
-            f"`{prefix}timerset <minutes>`\n"
-            f"`{prefix}starttime <time>`\n"
-            "`<google maps link>`\n"
-            "**RSVP**\n"
-            f"`{prefix}(i/c/h)...\n"
-            "[total]...\n"
-            "[team counts]`\n"
-            "**Lists**\n"
-            f"`{prefix}list [status]`\n"
-            f"`{prefix}list [status] tags`\n"
-            f"`{prefix}list teams`\n\n"
-            f"`{prefix}starting [team]`"))
+            f"`{prefix}raid <Pokémon>`\n"
+            f"`{prefix}wetter <Wetterzustand>`\n"
+            f"`{prefix}timerstellen <Minuten>`\n"
+            f"`{prefix}startzeit <Zeit>`\n"
+            "`<Google Maps Link>`\n"
+            "**Status aktualisieren**\n"
+            f"`{prefix}(i/k/h)...\n"
+            "[Gesamtzahl]...\n"
+            "[Teamzahl]`\n"
+            "**Listen**\n"
+            f"`{prefix}liste [Status]`\n"
+            f"`{prefix}liste [Status] tags`\n"
+            f"`{prefix}liste teams`\n\n"
+            f"`{prefix}starten [Team]`"))
     helpembed.add_field(
-        name="Description",
+        name="Beschreibung",
         value=(
-            "`Hatches Egg channel`\n"
-            "`Sets in-game weather`\n"
-            "`Sets hatch/raid timer`\n"
-            "`Sets start time`\n"
-            "`Updates raid location`\n\n"
-            "`interested/coming/here`\n"
-            "`# of trainers`\n"
-            "`# from each team (ex. 3m for 3 Mystic)`\n\n"
-            "`Lists trainers by status`\n"
-            "`@mentions trainers by status`\n"
-            "`Lists trainers by team`\n\n"
-            "`Moves trainers on 'here' list to a lobby.`"))
+            "`Legt den Boss fest`\n"
+            "`Legt das Wetter fest`\n"
+            "`Setzt den Timer`\n"
+            "`Setzt die Startzeit`\n"
+            "`Aktualisiert den Ort`\n\n"
+            "`interessiert/komme/hier`\n"
+            "`# an Trainern`\n"
+            "`# von jedem Team (z.B. 3m für 3 Mystic)`\n\n"
+            "`Listet Trainer nach Status`\n"
+            "`@erwähnt Trainer nach Status`\n"
+            "`Listet Trainer nach Team`\n\n"
+            "`Setzt alle anwesenden Trainer in die Lobby.`"))
     if not user:
         return helpembed
     await user.send(embed=helpembed)
