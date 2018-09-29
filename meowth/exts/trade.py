@@ -84,12 +84,12 @@ class Trade:
         ]
 
         return utils.make_embed(
-            title="Pokemon Trade - {}".format(lister.display_name),
+            title="Pokémon-Tausch - {}".format(lister.display_name),
             msg_colour=0x63b2f7,
             icon=Trade.icon_url,
             fields={
-                "Wants":'\n'.join(wants),
-                "Offers": str(offered_pokemon)
+                "Möchte":'\n'.join(wants),
+                "Bietet": str(offered_pokemon)
                 },
             inline=True,
             footer=lister.display_name,
@@ -100,12 +100,12 @@ class Trade:
     @staticmethod
     def make_offer_embed(trader, listed_pokemon, offer):
         return utils.make_embed(
-            title="Pokemon Trade Offer - {}".format(trader.display_name),
+            title="Pokémon-Tauschangebot - {}".format(trader.display_name),
             msg_colour=0x63b2f7,
             icon=Trade.icon_url,
             fields={
-                "You Offered": str(listed_pokemon),
-                "They Offer": str(offer)
+                "Dein Angebot": str(listed_pokemon),
+                "Gegenangebot": str(offer)
                 },
             inline=True,
             footer=trader.display_name,
@@ -126,12 +126,12 @@ class Trade:
         else:
             rolestr = ""
 
-        offer_str = ("{role}Meowth! {lister} offers a {pkmn} up for trade!"
+        offer_str = ("{role}Miauz! {lister} bietet ein {pkmn} zum Tausch an!"
                      "").format(role=rolestr, lister=ctx.author.display_name,
                                 pkmn=offered_pokemon)
 
-        instructions = "React to this message to make an offer!"
-        cancel_inst = ("{lister} may cancel the trade with :stop_button:"
+        instructions = "Reagiere auf diese Nachricht um ein Angebot zu machen!"
+        cancel_inst = ("{lister} kann den Tausch mit :stop_button: abbrechen."
                        "").format(lister=ctx.author.display_name)
 
         trade_msg = await ctx.send(
@@ -182,9 +182,9 @@ class Trade:
         offer_embed = self.make_offer_embed(trader, offered_pokemon, pkmn)
 
         offermsg = await self.lister.send(
-            ("Meowth! {} offers to trade their {} for your {}! "
-             "React with :white_check_mark: to accept the offer or "
-             ":negative_squared_cross_mark: to reject it!").format(
+            ("Miauz! {} will ein {} mit dir gegen dein {} tauschen! "
+             "Reagiere mit :white_check_mark: um das Angebot zu akzeptieren oder "
+             ":negative_squared_cross_mark: um es abzulehnen!").format(
                  trader.display_name, pkmn, offered_pokemon),
             embed=offer_embed)
 
@@ -208,15 +208,15 @@ class Trade:
         offered_pokemon = await self.offered_pokemon()
 
         acceptedmsg = (
-            "Meowth! {} has agreed to trade their {} for {}'s {}\n\n"
-            "Please DM them to coordinate the trade! "
-            "React with :ballot_box_with_check: when the trade has been "
-            "completed! To reject or cancel this offer, react with "
+            "Miauz! {} hat zugestimmt, ein {} gegen das {} von {} zu tauschen\n\n"
+            "Bitte schreibe eine PN um den Tausch zu koordinieren! "
+            "Reagiere mit :ballot_box_with_check:, wenn der Tauch stattgefunden hat!"
+            "Um den Tausch abzubrechen, reagiere mit"
             ":stop_button:").format(
                 self.lister.display_name,
                 offered_pokemon,
-                trader.display_name,
-                offer)
+                offer,
+                trader.display_name)
 
         special_check = [
             offered_pokemon.shiny,
@@ -227,10 +227,10 @@ class Trade:
 
         if any(special_check):
             acceptedmsg += (
-                "\n\nThis is a Special Trade! These can only be "
-                "completed once per day and can cost up to 1 million "
-                "stardust! Significant discounts can be earned by leveling "
-                "up your friendship before the trade is made!")
+                "\n\nDas ist ein Spezialtausch! Diese können nur "
+                "einmal am Tag durchgeführt werden und bis zu 1 Million "
+                "Sternenstaub! Wenn ihr euer Freunschaftslevel vor dem Tauschen erhöht "
+                "wird der benötigte Sternenstaub verrringert!")
 
         tradermsg = await trader.send(acceptedmsg)
         listermsg = await lister.send(acceptedmsg)
@@ -245,7 +245,7 @@ class Trade:
                 reject = self.guild.get_member(offerid)
                 try:
                     await reject.send((
-                        "Meowth... {} accepted a competing offer for their {}."
+                        "Miauz... {} hat ein anderes Angebot für das {} bekommen."
                         "").format(self.lister.display_name, offered_pokemon))
                 except discord.HTTPException:
                     pass
@@ -253,7 +253,7 @@ class Trade:
 
 
         await listingmsg.edit(
-            content="Meowth! {} has accepted an offer!".format(
+            content="Miauz! {} hat ein Angebot angenommen!".format(
                 self.lister.display_name),
             )
 
@@ -303,14 +303,14 @@ class Trade:
         listingmsg = await self.get_listmsg()
         trader = self.guild.get_member(offer_id)
         await self.lister.send(
-            "Meowth... {} withdrew their trade offer of {}.".format(
+            "Miauz... {} hat das Angebot für das {} zurückgezogen.".format(
                 trader.display_name, self.offers[offer_id]))
 
-        offer_str = "Meowth! {lister} offers a {pkmn} up for trade!".format(
+        offer_str = "Miauz! {lister} bietet ein {pkmn} zum Tausch an!".format(
             lister=self.lister.display_name, pkmn=offered_pokemon)
 
-        instructions = "React to this message to make an offer!"
-        cancel_inst = "{lister} may cancel the trade with :stop_button:".format(
+        instructions = "Reagiere auf diese Nachricht um ein Angebot zu machen!"
+        cancel_inst = "{lister} kann den Tausch mit :stop_button: abbrechen.".format(
             lister=self.lister.display_name)
 
         await listingmsg.edit(
@@ -330,14 +330,14 @@ class Trade:
         wanted_pokemon = await self.wanted_pokemon()
 
         await trader.send(
-            "Meowth... {} rejected your offer for their {}.".format(
+            "Miauz... {} hat dein Angebot für das {} abgelehnt.".format(
                 self.lister.display_name, offered_pokemon))
 
-        offer_str = "Meowth! {lister} offers a {pkmn} up for trade!".format(
+        offer_str = "Miauz! {lister} bietet ein {pkmn} zum Tausch an!".format(
             lister=self.lister.display_name, pkmn=offered_pokemon)
 
-        instructions = "React to this message to make an offer!"
-        cancel_inst = "{lister} may cancel the trade with :stop_button:".format(
+        instructions = "Reagiere auf diese Nachricht um ein Angebot zu machen!"
+        cancel_inst = "{lister} kann den Tausch mit :stop_button: abbrechen.".format(
             lister=self.lister.display_name)
 
         await listingmsg.edit(
@@ -357,7 +357,7 @@ class Trade:
             reject = self.guild.get_member(offerid)
 
             await reject.send(
-                "Meowth... {} canceled their trade offer of {}".format(
+                "Miauz... {} hat das Tauschangebot für das {} abgebrochen.".format(
                     self.lister.display_name, offered_pokemon))
 
         await self.close_trade()
@@ -410,8 +410,8 @@ class Trading:
         """Create a trade listing."""
 
         want_ask = await ctx.send(
-            f"{ctx.author.display_name}, what Pokemon are you willing to accept "
-            f"in exchange for {str(offer)}?")
+            f"{ctx.author.display_name}, welches Pokémon würdest du im Tausch gegen "
+            f"{str(offer)} annehmen?")
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
