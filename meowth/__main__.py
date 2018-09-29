@@ -539,7 +539,7 @@ async def create_raid_channel(type, pkmn, level, details, report_channel):
         raid_channel_overwrite_list.append(meowth_overwrite)
         raid_channel = await guild.create_text_channel(raid_channel_name, overwrites=raid_channel_overwrites,category=raid_channel_category)
         if guild_dict[guild.id]['configure_dict']['invite']['enabled']:
-            for role in guild.role_hierarchy:
+            for role in guild.roles:
                 if role.permissions.manage_guild or role.permissions.manage_channels or role.permissions.manage_messages:
                     raid_channel_overwrite_list.append((role, discord.PermissionOverwrite(send_messages=True)))
     elif type == "raid":
@@ -791,7 +791,7 @@ async def expire_channel(channel):
                                     continue
                             if (overwrite[0].name not in guild.me.top_role.name) and (overwrite[0].name not in guild.me.name):
                                 await channel.set_permissions(overwrite[0], read_messages=False)
-                        for role in guild.role_hierarchy:
+                        for role in guild.roles:
                             if role.permissions.manage_guild or role.permissions.manage_channels:
                                 await channel.set_permissions(role, read_messages=True)
                             continue
@@ -4807,7 +4807,7 @@ async def _exraid(ctx, location):
     raid_channel_category = get_category(message.channel,"EX", category_type="exraid")
     raid_channel = await message.guild.create_text_channel(raid_channel_name, overwrites=raid_channel_overwrites,category=raid_channel_category)
     if guild_dict[channel.guild.id]['configure_dict']['invite']['enabled']:
-        for role in channel.guild.role_hierarchy:
+        for role in channel.guild.roles:
             if role.permissions.manage_guild or role.permissions.manage_channels or role.permissions.manage_messages:
                 try:
                     await raid_channel.set_permissions(role, send_messages=True)
