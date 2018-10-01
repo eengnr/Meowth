@@ -272,7 +272,7 @@ def weakness_to_str(guild, weak_list):
 def sanitize_channel_name(name):
     # Remove all characters other than alphanumerics,
     # dashes, underscores, and spaces
-    ret = re.sub('[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642🏰 _\\-]', '', name)
+    ret = re.sub('[^a-zA-Z0-9äöüÄÖÜßé\-\-\u2640\u2642🏰 _\\-]', '', name)
     # Replace spaces with dashes
     ret = ret.replace(' ', '-')
     return ret
@@ -344,7 +344,7 @@ def raise_admin_violation(message):
         command=message.content, user=message.author))
 
 def spellcheck(word):
-    suggestion = pkmn_match.get_pkmn(re.sub(r"[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642 ]+", '', word))
+    suggestion = pkmn_match.get_pkmn(re.sub(r"[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642 ]+", '', word))
     # If we have a spellcheck suggestion
     if suggestion and suggestion != word:
         result = pkmn_info['pokemon_list'][suggestion]
@@ -3926,7 +3926,7 @@ async def want(ctx,*,pokemon):
     for want in want_list:
         entered_want = want
         entered_want = get_name(entered_want).lower() if entered_want.isdigit() else entered_want
-        rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+        rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
         pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', entered_want)), None)
         if pkmn_match:
             entered_want = pkmn_match
@@ -4020,7 +4020,7 @@ async def unwant(ctx,*,pokemon):
         for unwant in unwant_list:
             entered_unwant = unwant
             entered_unwant = get_name(entered_unwant).lower() if entered_unwant.isdigit() else entered_unwant
-            rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+            rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
             pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', entered_unwant)), None)
             if pkmn_match:
                 entered_unwant = pkmn_match
@@ -4089,7 +4089,7 @@ async def _wild(message, content):
     if len(wild_split) <= 1:
         await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!wild <pokemon name> <location>**'))
         return
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     content = ' '.join(wild_split)
     entered_wild = content.split(' ', 1)[0]
     entered_wild = get_name(entered_wild).lower() if entered_wild.isdigit() else entered_wild.lower()
@@ -4218,7 +4218,7 @@ async def _raid(message, content):
         del raid_split[(- 1)]
     else:
         raidexp = False
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', entered_raid)), None)
     if pkmn_match:
         entered_raid = pkmn_match
@@ -4503,7 +4503,7 @@ async def _eggassume(args, raid_channel, author=None):
     raid_message = await raid_channel.get_message(eggdetails['raidmessage'])
     entered_raid = re.sub('[\\@]', '', args.lower().lstrip('assume').lstrip(' '))
     entered_raid = get_name(entered_raid).lower() if entered_raid.isdigit() else entered_raid
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', entered_raid)), None)
     if pkmn_match:
         entered_raid = pkmn_match
@@ -4570,7 +4570,7 @@ async def _eggassume(args, raid_channel, author=None):
 
 async def _eggtoraid(entered_raid, raid_channel, author=None):
     entered_raid = get_name(entered_raid).lower() if entered_raid.isdigit() else entered_raid.lower()
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', entered_raid)), None)
     if pkmn_match:
         entered_raid = pkmn_match
@@ -4762,7 +4762,7 @@ async def _exraid(ctx, location):
     if len(exraid_split) <= 0:
         await channel.send(_('Meowth! Give more details when reporting! Usage: **!exraid <location>**'))
         return
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', exraid_split[0].lower())), None)
     if pkmn_match:
         del exraid_split[0]
@@ -5030,7 +5030,7 @@ async def research(ctx, *, details = None):
             research_embed.remove_field(0)
             break
     if not error:
-        rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+        rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
         pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', reward.lower())), None)
         roletest = ""
         if pkmn_match:
@@ -5835,7 +5835,7 @@ async def counters(ctx, *, args = None):
     Wenn eine gültige Pokebattler User ID angegeben wird, wird die Simulation personalisiert durchgeführt.
     Verwendet den aktuellen Raid-Boss als Standard.
     """
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     channel = ctx.channel
     guild = channel.guild
     user = guild_dict[ctx.guild.id].get('trainers',{}).get(ctx.author.id,{}).get('pokebattlerid', None)
@@ -5882,7 +5882,7 @@ async def counters(ctx, *, args = None):
             if arg.isdigit():
                 user = arg
                 break
-        rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+        rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
         pkmn = next((str(p) for p in get_raidlist() if not str(p).isdigit() and re.sub(rgx, '', str(p)) in re.sub(rgx, '', args.lower())), None)
         if not pkmn:
             pkmn = guild_dict[guild.id]['raidchannel_dict'].get(channel.id,{}).get('pokemon', None)
@@ -5962,9 +5962,15 @@ async def _counters(ctx, pkmn, user = None, weather = None, movesetstr = "Unbeka
         for ctr in reversed(ctrs):
             ctr_name = clean(ctr['pokemonId'])
             ctr_nick = clean(ctr.get('name',''))
-            ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.split(' ')[0].lower())].title()
-            if len(ctr_name.split(' ')) > 1:
-                ctr_transl = ctr_name.split(' ')[1] + ' ' + ctr_transl
+            ctr_transl = ctr_name
+            try:
+                ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.lower())].title()
+            except:
+                pass
+            try:
+                ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.replace(' ', '-').lower())].title()
+            except:
+                pass
             ctr_cp = ctr['cp']
             moveset = ctr['byMove'][-1]
             move1st = clean(moveset['move1'])[:-5]
@@ -5978,7 +5984,7 @@ async def _counters(ctx, pkmn, user = None, weather = None, movesetstr = "Unbeka
             except:
                 pass
             moves = _("{move1} | {move2}").format(move1=(move1st), move2=(move2nd))
-            name = _("#{index} - {ctr_name}").format(index=index, ctr_name=(ctr_transl or ctr_name or ctr_nick))
+            name = _("#{index} - {ctr_name}").format(index=index, ctr_name=(ctr_nick or  ctr_transl))
             cpstr = _("CP")
             ctrs_embed.add_field(name=name,value=f"{cpstr}: {ctr_cp}\n{moves}")
             index += 1
@@ -6034,9 +6040,15 @@ async def _get_generic_counters(guild, pkmn, weather=None):
     ctrindex = 1
     for ctr in reversed(ctrs):
         ctr_name = clean(ctr['pokemonId'])
-        ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.split(' ')[0].lower())].title()
-        if len(ctr_name.split(' ')) > 1:
-            ctr_transl = ctr_name.split(' ')[1] + ' ' + ctr_transl
+        ctr_transl = ctr_name
+        try:
+            ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.lower())].title()
+        except:
+            pass
+        try:
+            ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.replace(' ', '-').lower())].title()
+        except:
+            pass
         moveset = ctr['byMove'][-1]
         move1st = clean(moveset['move1'])[:-5]
         move2nd = clean(moveset['move2'])
@@ -6049,7 +6061,7 @@ async def _get_generic_counters(guild, pkmn, weather=None):
         except:
             pass
         moves = _("{move1} | {move2}").format(move1=(move1st), move2=(move2nd))
-        name = _("#{index} - {ctr_name}").format(index=ctrindex, ctr_name=(ctr_transl or ctr_name))
+        name = _("#{index} - {ctr_name}").format(index=ctrindex, ctr_name=(ctr_transl))
         ctrs_embed.add_field(name=name,value=moves)
         ctrindex += 1
     ctrs_dict[ctrs_index]['embed'] = ctrs_embed
@@ -6075,9 +6087,15 @@ async def _get_generic_counters(guild, pkmn, weather=None):
         ctrindex = 1
         for ctr in reversed(ctrs):
             ctr_name = clean(ctr['pokemonId'])
-            ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.split(' ')[0].lower())].title()
-            if len(ctr_name.split(' ')) > 1:
-                ctr_transl = ctr_name.split(' ')[1] + ' ' + ctr_transl
+            ctr_transl = ctr_name
+            try:
+                ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.lower())].title()
+            except:
+                pass
+            try:
+                ctr_transl = pkmn_info['pokemon_list'][pkmn_en_info['pokemon_list'].index(ctr_name.replace(' ', '-').lower())].title()
+            except:
+                pass
             moveset = ctr['byMove'][-1]
             move1st = clean(moveset['move1'])[:-5]
             move2nd = clean(moveset['move2'])
@@ -6090,7 +6108,7 @@ async def _get_generic_counters(guild, pkmn, weather=None):
             except:
                 pass
             moves = _("{move1} | {move2}").format(move1=(move1st), move2=(move2nd))
-            name = _("#{index} - {ctr_name}").format(index=ctrindex, ctr_name=(ctr_transl or ctr_name))
+            name = _("#{index} - {ctr_name}").format(index=ctrindex, ctr_name=(ctr_transl))
             ctrs_embed.add_field(name=name,value=moves)
             ctrindex += 1
         ctrs_dict[ctrs_index] = {'moveset': movesetstr, 'embed': ctrs_embed, 'emoji': emoji_dict[ctrs_index]}
@@ -6154,7 +6172,7 @@ async def interested(ctx, *, teamcounts: str=None):
             teamcounts = ((((str(trainer_dict[ctx.author.id]['count']) + ' ') + bluecount) + redcount) + yellowcount) + unknowncount
         else:
             teamcounts = '1'
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     if teamcounts:
         if "all" in teamcounts.lower():
             # What a hack
@@ -6241,7 +6259,7 @@ async def coming(ctx, *, teamcounts: str=None):
     überprüft, ob du bereits mit !interessiert angegeben hast, dass du eventuell kommst.
     Falls das nicht der Fall ist, kommst du alleine zum Raid."""
     trainer_dict = guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['trainer_dict']
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     entered_interest = trainer_dict.get(ctx.author.id, {}).get('interest', [])
     egglevel = guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['egglevel']
     pkmn_match = None
@@ -6344,7 +6362,7 @@ async def here(ctx, *, teamcounts: str=None):
     überprüft, ob du bereits mit !komme angegeben hast, dass du auf dem Weg bist.
     Falls das nicht der Fall ist, kommst du alleine zum Raid."""
     trainer_dict = guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['trainer_dict']
-    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\u2640\u2642]'
+    rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
     entered_interest = trainer_dict.get(ctx.author.id, {}).get('interest', [])
     egglevel = guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['egglevel']
     pkmn_match = None
