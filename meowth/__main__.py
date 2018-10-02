@@ -1653,12 +1653,12 @@ async def welcome(ctx, user: discord.Member=None):
     await on_member_join(user)
 
 @Meowth.command(hidden=True)
-@commands.has_permissions(manage_guild=True)
+@checks.is_owner()
 async def outputlog(ctx):
     """Zeigt die Log-Datei von Mauzi.
 
     Verwendung: !outputlog
-    Die Ausgabe wird auf Pastebin angezeigt."""
+    Die Ausgabe wird auf hastebin angezeigt."""
     with open(os.path.join('logs', 'meowth.log'), 'r', encoding='latin-1', errors='replace') as logfile:
         logdata = logfile.read()
     await ctx.channel.send(hastebin.post(logdata))
