@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2018-08-20 18:24+CEST\n"
-"PO-Revision-Date: 2018-09-27 19:01+0200\n"
+"PO-Revision-Date: 2018-10-18 20:51+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2375,10 +2375,10 @@ msgid ""
 "\n"
 "Usage: **!research** or **!research <pokestop>, <quest>, <reward>**"
 msgstr ""
-"hat eine ungültige Parameteranzahl eingegeben.\n"
+"hast eine ungültige Parameteranzahl eingegeben.\n"
 "\n"
-"Verwende: **!forschung** oder **!forschung <PokéStop>, <Feldforschung>, "
-"<Belohnung>**"
+"Verwende: **!forschung <Belohnung>, <Feldforschung>, <PokéStop> [optionaler "
+"Google-Maps-Link]**"
 
 #: __main__.py:4952 __main__.py:4976
 msgid "**Pokestop:**"
@@ -2447,7 +2447,7 @@ msgstr ""
 
 #: __main__.py:5022
 msgid "{roletest}Field Research reported by {author}"
-msgstr "{roletest}Feldforschung von {author} gemeldet"
+msgstr "{roletest}Feldforschung von {author} gemeldet!"
 
 #: __main__.py:5023
 msgid "Meowth! Click here for my directions to the research!"
@@ -2461,7 +2461,7 @@ msgstr "**Forschungsmeldung abgebrochen**"
 msgid ""
 "Meowth! Your report has been cancelled because you {error}! Retry when "
 "you're ready."
-msgstr "Miauz! Du hast {error}! Versuche es noch einmal wenn du bereit bist."
+msgstr "Miauz! Du {error}! Versuche es noch einmal wenn du bereit bist."
 
 #: __main__.py:5068
 msgid "Meowth! Give more details when reporting! Usage: **!meetup <location>**"
