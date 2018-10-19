@@ -4946,15 +4946,15 @@ async def research(ctx, *, details = None):
             reward, quest, location = research_split
             loc_url = create_gmaps_query(location, message.channel, type="research")
             location = location.replace(loc_url,"").strip()
-            text_pokestop = _("**Pokestop:**") + ' ' + location.title()
-            text_quest = _("**Quest:**") + ' ' + quest.title()
+            text_pokestop = _("**Pokestop:**") + ' ' + location
+            text_quest = _("**Quest:**") + ' ' + quest
             try:
                 if discord.utils.get(guild.roles, name=reward.lower().rsplit(' ', 1)[1]) and not reward.lower().rsplit(' ', 1)[0] == '':
-                    reward_txt=reward.title().rsplit(' ', 1)[0]
+                    reward_txt=reward.rsplit(' ', 1)[0]
                 else:
-                    reward_txt=reward.title()
+                    reward_txt=reward
             except:
-                reward_txt=reward.title()
+                reward_txt=reward
             text_reward = _("**Reward:**") + ' ' + reward_txt
             break
         else:
