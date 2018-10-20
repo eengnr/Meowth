@@ -5733,15 +5733,18 @@ async def duplicate(ctx):
                 logger.info((('Duplicate Report - Channel Expired - ' + channel.name) + ' - Last Report by ') + author.name)
                 raidmsg = await channel.get_message(rc_d['raidmessage'])
                 reporter = raidmsg.mentions[0]
-                if 'egg' in raidmsg.content:
-                    egg_reports = guild_dict[guild.id]['trainers'][reporter.id]['egg_reports']
-                    guild_dict[guild.id]['trainers'][reporter.id]['egg_reports'] = egg_reports - 1
-                elif 'EX' in raidmsg.content:
-                    ex_reports = guild_dict[guild.id]['trainers'][reporter.id]['ex_reports']
-                    guild_dict[guild.id]['trainers'][reporter.id]['ex_reports'] = ex_reports - 1
-                else:
-                    raid_reports = guild_dict[guild.id]['trainers'][reporter.id]['raid_reports']
-                    guild_dict[guild.id]['trainers'][reporter.id]['raid_reports'] = raid_reports - 1
+                try:
+                    if 'egg' in raidmsg.content:
+                        egg_reports = guild_dict[guild.id]['trainers'][reporter.id]['egg_reports']
+                        guild_dict[guild.id]['trainers'][reporter.id]['egg_reports'] = egg_reports - 1
+                    elif 'EX' in raidmsg.content:
+                        ex_reports = guild_dict[guild.id]['trainers'][reporter.id]['ex_reports']
+                        guild_dict[guild.id]['trainers'][reporter.id]['ex_reports'] = ex_reports - 1
+                    else:
+                        raid_reports = guild_dict[guild.id]['trainers'][reporter.id]['raid_reports']
+                        guild_dict[guild.id]['trainers'][reporter.id]['raid_reports'] = raid_reports - 1
+                except:
+                    pass
                 await expire_channel(channel)
                 return
         else:
