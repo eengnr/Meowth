@@ -320,6 +320,18 @@ def create_gmaps_query(details, channel, type="raid"):
         else:
             newloc = details[newlocindex:newlocend + 1]
             return newloc
+    #support for plus codes for research
+    if report == "research":
+        plusindex = details.find('+')
+        pluscode = ""
+        if plusindex != (- 1):
+            plusend = details.find(' ', plusindex)
+            if plusend == (- 1) and details[plusindex - 5] == " ":
+                pluscode = details[plusindex - 4:]
+            else:
+                pluscode = details[plusindex - 4:plusindex + 3]
+            if pluscode != "":
+                return "https://www.google.com/maps/search/?api=1&query={0}".format(pluscode.replace("+", "%2B"))
     details_list = details.split()
     #look for lat/long coordinates in the location details. If provided,
     #then channel location hints are not needed in the  maps query
@@ -4946,15 +4958,19 @@ async def research(ctx, *, details = None):
             reward, quest, location = research_split
             loc_url = create_gmaps_query(location, message.channel, type="research")
             location = location.replace(loc_url,"").strip()
+            #remove plus code
+            plusindex = location.find('+')
+            if plusindex != (- 1) and location[plusindex - 5] == " ":
+                location = location[0:plusindex - 5]
             text_pokestop = _("**Pokestop:**") + ' ' + location
             text_quest = _("**Quest:**") + ' ' + quest
             try:
                 if discord.utils.get(guild.roles, name=reward.lower().rsplit(' ', 1)[1]) and not reward.lower().rsplit(' ', 1)[0] == '':
-                    reward_txt=reward.rsplit(' ', 1)[0]
+                    reward_txt = reward.rsplit(' ', 1)[0]
                 else:
-                    reward_txt=reward
+                    reward_txt = reward
             except:
-                reward_txt=reward
+                reward_txt = reward
             text_reward = _("**Reward:**") + ' ' + reward_txt
             break
         else:
