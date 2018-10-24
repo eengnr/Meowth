@@ -4963,7 +4963,7 @@ async def research(ctx, *, details = None):
             if plusindex != (- 1) and location[plusindex - 5] == " ":
                 location = location[0:plusindex - 5]
             text_pokestop = _("**Pokestop:**") + ' ' + location
-            text_quest = _("**Quest:**") + ' ' + quest
+            text_quest = _("**Quest:**") + ' ' + quest.strip()
             try:
                 if discord.utils.get(guild.roles, name=reward.lower().rsplit(' ', 1)[1]) and not reward.lower().rsplit(' ', 1)[0] == '':
                     reward_txt = reward.rsplit(' ', 1)[0]
@@ -4971,7 +4971,7 @@ async def research(ctx, *, details = None):
                     reward_txt = reward
             except:
                 reward_txt = reward
-            text_reward = _("**Reward:**") + ' ' + reward_txt
+            text_reward = _("**Reward:**") + ' ' + reward_txt.strip()
             break
         else:
             error = _("entered an incorrect amount of arguments.\n\nUsage: **!research** or **!research <pokestop>, <quest>, <reward>**")
