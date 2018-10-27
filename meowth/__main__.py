@@ -4951,6 +4951,34 @@ async def _invite(ctx):
     await reply.delete()
     await exraidmsg.delete()
 
+def get_custom_role(reward):
+    candy_words = ["candy", "bonbon"]
+    candy_role = "quest_candy"
+    dust_words = ["dust", "staub"]
+    dust_role = "quest_staub"
+    goldenberry_words = ["gold", "himmih", "razz"]
+    goldenberry_role = "quest_goldbeere"
+    silverberry_words = ["silver", "silber", "sanana", "pinap"]
+    silverberry_role = "quest_silberbeere"
+    tm_words = ["lade", "quick", "charge", "schnell"]
+    tm_role = "quest_tm"
+
+    reward = reward.lower()
+
+    if any(f in reward for f in candy_words):
+        return candy_role
+    if any(f in reward for f in dust_words):
+        return dust_role
+    if any(f in reward for f in goldenberry_words):
+        return goldenberry_role
+    if any(f in reward for f in silverberry_words):
+        return silverberry_role
+    if any(f in reward for f in tm_words):
+        return tm_role
+
+    return None
+
+
 @Meowth.command(aliases=['res', 'quest', 'forschung', 'aufgabe', 'ff'])
 @checks.allowresearchreport()
 async def research(ctx, *, details = None):
@@ -5010,6 +5038,12 @@ async def research(ctx, *, details = None):
             role = discord.utils.get(guild.roles, name=quest_tag)
             if role:
                 roletest = _("{pokemon} - ").format(pokemon=role.mention)
+            #still no tag found, check whole text for custom tags
+            else:
+                custom_role = get_custom_role(reward)
+                role = discord.utils.get(guild.roles, name=custom_role)
+                if role:
+                    roletest = _("{pokemon} - ").format(pokemon=role.mention)
         research_msg = _("{roletest}Field Research reported by {author}").format(roletest=roletest,author=author.mention)
         research_msg = research_msg + '\n' + text_reward
         research_msg = research_msg + '\n' + text_quest
