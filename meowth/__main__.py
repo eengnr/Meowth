@@ -3718,7 +3718,7 @@ async def about(ctx):
         member_count += len(guild.members)
     embed = discord.Embed(colour=embed_colour, icon_url=Meowth.user.avatar_url)
     embed.add_field(name=_('About Meowth'), value=about, inline=False)
-    embed.add_field(name=_('Owner'), value=owner)
+    embed.add_field(name=_('Owner'), value=owner.nick)
     if guild_count > 1:
         embed.add_field(name=_('Servers'), value=guild_count)
         embed.add_field(name=_('Members'), value=member_count)

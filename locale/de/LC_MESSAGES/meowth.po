@@ -6,13 +6,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2018-08-20 18:24+CEST\n"
-"PO-Revision-Date: 2018-10-18 20:51+0200\n"
+"PO-Revision-Date: 2018-10-27 14:01+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: de\n"
@@ -451,7 +451,7 @@ msgstr "Miauz! Der Kanal existiert nicht. Versuche es nochmal."
 
 #: __main__.py:1745 __main__.py:3704
 msgid "For support, contact us on our Discord server. Invite Code: hhVjAN8"
-msgstr ""
+msgstr "Einladungs-Code für den Mauzi-Support-Server: hhVjAN8"
 
 #: __main__.py:1759
 msgid "Announcement sent to {} server owners: {} successful, {} failed."
@@ -1600,15 +1600,16 @@ msgstr "Miauz! {status} ist kein gültiger Status!"
 
 #: __main__.py:3622
 msgid "Removed {cleancount} empty roles"
-msgstr ""
+msgstr "{cleancount} leere Rollen wurden entfernt"
 
 #: __main__.py:3652 __main__.py:3703
 msgid "Uptime"
-msgstr ""
+msgstr "Laufzeit"
 
 #: __main__.py:3656 __main__.py:3708
 msgid "I need the `Embed links` permission to send this"
 msgstr ""
+"Ich benötige die Berechtigung zum Einbetten von Links um das zu verschicken"
 
 #: __main__.py:3665
 msgid "{yr}y {mth}m {day}d {hr}:{min}"
@@ -1620,15 +1621,15 @@ msgstr ""
 
 #: __main__.py:3669
 msgid "{day} days {hr} hrs {min} mins"
-msgstr ""
+msgstr "{day} Tage {hr} Stunden {min} Minuten"
 
 #: __main__.py:3671
 msgid "{hr} hrs {min} mins {sec} secs"
-msgstr ""
+msgstr "{hr} Stunden {min} Minuten {sec} Sekunden"
 
 #: __main__.py:3673
 msgid "{min} mins {sec} secs"
-msgstr ""
+msgstr "{min} Minuten {sec} Sekunden"
 
 #: __main__.py:3689
 msgid ""
@@ -1640,34 +1641,42 @@ msgid ""
 "[Join our server]({server_invite}) if you have any questions or feedback.\n"
 "\n"
 msgstr ""
+"Ich bin Mauzi, ein Discord-Bot für Pokémon GO!\n"
+"\n"
+"Ich wurde ursprünglich von [{author_name}]({author_repo}) entwickelt und "
+"Verbesserungen wurden von vielen Personen beigetragen.\n"
+"\n"
+"Für Fragen und Feedback kannst du dem [offiziellen Support-Server]"
+"({server_invite}) beitreten.\n"
+"\n"
 
 #: __main__.py:3696
 msgid "About Meowth"
-msgstr ""
+msgstr "Über Mauzi"
 
 #: __main__.py:3697
 msgid "Owner"
-msgstr ""
+msgstr "Besitzer"
 
 #: __main__.py:3699
 msgid "Servers"
-msgstr ""
+msgstr "Server"
 
 #: __main__.py:3700
 msgid "Members"
-msgstr ""
+msgstr "Mitglieder"
 
 #: __main__.py:3701
 msgid "Your Server"
-msgstr ""
+msgstr "Discord-Server"
 
 #: __main__.py:3702
 msgid "Your Members"
-msgstr ""
+msgstr "Mitglieder auf diesem Server"
 
 #: __main__.py:3735
 msgid "Maximum guild roles reached."
-msgstr ""
+msgstr "Die maximale Anzahl von Rollen wurde auf dem Server erreicht."
 
 #: __main__.py:3740
 msgid ""
