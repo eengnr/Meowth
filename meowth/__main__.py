@@ -1054,6 +1054,9 @@ async def on_ready():
     Meowth.owner = discord.utils.get(
         Meowth.get_all_members(), id=config['master'])
     await _print(Meowth.owner, _('Starting up...'))
+    Meowth.coowner = []
+    for cid in config['comaster']:
+        Meowth.coowner.append(discord.utils.get(Meowth.get_all_members(), id=cid))
     Meowth.uptime = datetime.datetime.now()
     msg_success = 0
     msg_fail = 0
@@ -3705,6 +3708,7 @@ async def about(ctx):
     bot_repo = author_repo + '/Meowth'
     guild_url = 'https://discord.gg/hhVjAN8'
     owner = Meowth.owner
+    coowner = Meowth.coowner
     channel = ctx.channel
     uptime_str = await _uptime(Meowth)
     yourserver = ctx.message.guild.name
@@ -3713,12 +3717,21 @@ async def about(ctx):
     about = _("I'm Meowth! A Pokemon Go helper bot for Discord!\n\nI'm made by [{author_name}]({author_repo}) and improvements have been contributed by many other people also.\n\n[Join our server]({server_invite}) if you have any questions or feedback.\n\n").format(author_name=author_name, author_repo=author_repo, server_invite=guild_url)
     member_count = 0
     guild_count = 0
+    try:
+        owner_list = owner.nick
+    except:
+        owner_list = owner.name
+    for m in coowner:
+        try:
+            owner_list = owner_list + ', ' + m.nick
+        except:
+            owner_list = owner_list + ', ' + m.name
     for guild in Meowth.guilds:
         guild_count += 1
         member_count += len(guild.members)
     embed = discord.Embed(colour=embed_colour, icon_url=Meowth.user.avatar_url)
     embed.add_field(name=_('About Meowth'), value=about, inline=False)
-    embed.add_field(name=_('Owner'), value=owner.nick)
+    embed.add_field(name=_('Owner'), value=owner_list)
     if guild_count > 1:
         embed.add_field(name=_('Servers'), value=guild_count)
         embed.add_field(name=_('Members'), value=member_count)
@@ -3728,6 +3741,11 @@ async def about(ctx):
     embed.set_footer(text=_('For support, contact us on our Discord server. Invite Code: hhVjAN8'))
     try:
         await channel.send(embed=embed)
+        try:
+            if config['invitecode'] != "":
+                await channel.send('https://discord.gg/' + config['invitecode'])
+        except:
+            pass
     except discord.HTTPException:
         await channel.send(_('I need the `Embed links` permission to send this'))
 
