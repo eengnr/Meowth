@@ -3720,12 +3720,18 @@ async def about(ctx):
     try:
         owner_list = owner.nick
     except:
-        owner_list = owner.name
+        try:
+            owner_list = owner.name
+        except:
+            owner_list = owner
     for m in coowner:
         try:
             owner_list = owner_list + ', ' + m.nick
         except:
-            owner_list = owner_list + ', ' + m.name
+            try:
+                owner_list = owner_list + ', ' + m.name
+            except:
+                owner_list = owner_list + ', ' + m
     for guild in Meowth.guilds:
         guild_count += 1
         member_count += len(guild.members)
