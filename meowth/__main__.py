@@ -3734,14 +3734,33 @@ async def about(ctx):
     embed.add_field(name=_('Uptime'), value=uptime_str)
     embed.set_footer(text=_('For support, contact us on our Discord server. Invite Code: hhVjAN8'))
     try:
-        await channel.send(embed=embed)
-        try:
-            if config['invitecode'] != "":
-                await channel.send('https://discord.gg/' + config['invitecode'])
-        except:
-            pass
+        about_msg = await channel.send(embed=embed)
+        await asyncio.sleep(180)
+        await ctx.message.delete()
+        await about_msg.delete()
     except discord.HTTPException:
         await channel.send(_('I need the `Embed links` permission to send this'))
+
+@Meowth.command(aliases=['qr'])
+async def einladung(ctx):
+    'Zeigt einen Einladungslink'
+    embed_colour = ctx.guild.me.colour or discord.Colour.lighter_grey()
+    channel = ctx.channel
+    message = ctx.message
+    try:
+        if config['invitecode'] != "":
+            invite = discord.Embed(colour=embed_colour, icon_url=Meowth.user.avatar_url)
+            invite_url = "https://discord.gg/" + config['invitecode']
+            invite.set_image(url="https://api.qrserver.com/v1/create-qr-code/?size=300x300&qzone=1&data=" + invite_url)
+            sent_invite = await channel.send(content=invite_url, embed=invite)
+            await asyncio.sleep(180)
+            await message.delete()
+            await sent_invite.delete()
+    except:
+        sent_reply = await channel.send("Miauz! Kein Einladungscode verfügbar.")
+        await asyncio.sleep(10)
+        await message.delete()
+        await sent_reply.delete()
 
 @Meowth.command()
 @checks.allowteam()
