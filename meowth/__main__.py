@@ -3717,21 +3717,9 @@ async def about(ctx):
     about = _("I'm Meowth! A Pokemon Go helper bot for Discord!\n\nI'm made by [{author_name}]({author_repo}) and improvements have been contributed by many other people also.\n\n[Join our server]({server_invite}) if you have any questions or feedback.\n\n").format(author_name=author_name, author_repo=author_repo, server_invite=guild_url)
     member_count = 0
     guild_count = 0
-    try:
-        owner_list = owner.nick
-    except:
-        try:
-            owner_list = owner.name
-        except:
-            owner_list = owner
+    owner_list = owner.display_name
     for m in coowner:
-        try:
-            owner_list = owner_list + ', ' + m.nick
-        except:
-            try:
-                owner_list = owner_list + ', ' + m.name
-            except:
-                owner_list = owner_list + ', ' + m
+        owner_list = owner_list + ', ' + m.display_name
     for guild in Meowth.guilds:
         guild_count += 1
         member_count += len(guild.members)
