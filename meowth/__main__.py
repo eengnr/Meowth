@@ -320,24 +320,25 @@ def create_gmaps_query(details, channel, type="raid"):
         else:
             newloc = details[newlocindex:newlocend + 1]
             return newloc
+    loc_list = guild_dict[channel.guild.id]['configure_dict'][report]['report_channels'][channel.id].split()
     #support for plus codes for research
     if report == "research":
         plusindex = details.find('+')
         pluscode = ""
-        if plusindex != (- 1):
+        if plusindex != (- 1) and details[plusindex - 5] == " ":
             plusend = details.find(' ', plusindex)
-            if plusend == (- 1) and details[plusindex - 5] == " ":
+            if plusend == (- 1):
+                pluscode = details[plusindex - 4:] + " {0}".format(" ".join(loc_list))
+            elif plusend - plusindex == 3:
                 pluscode = details[plusindex - 4:]
-            else:
-                pluscode = details[plusindex - 4:plusindex + 3]
-            if pluscode != "":
-                return "https://www.google.com/maps/search/?api=1&query={0}".format(pluscode.replace("+", "%2B"))
+        if pluscode != "":
+            return "https://www.google.com/maps/search/?api=1&query={0}".format(pluscode.replace("+", "%2B").replace(" ", "%20"))
     details_list = details.split()
     #look for lat/long coordinates in the location details. If provided,
     #then channel location hints are not needed in the  maps query
     if re.match (r'^\s*-?\d{1,2}\.?\d*,\s*-?\d{1,3}\.?\d*\s*$', details): #regex looks for lat/long in the format similar to 42.434546, -83.985195.
         return "https://www.google.com/maps/search/?api=1&query={0}".format('+'.join(details_list))
-    loc_list = guild_dict[channel.guild.id]['configure_dict'][report]['report_channels'][channel.id].split()
+
     return 'https://www.google.com/maps/search/?api=1&query={0}+{1}'.format('+'.join(details_list), '+'.join(loc_list))
 
 # Given a User, check that it is Meowth's master
