@@ -300,6 +300,13 @@ def print_emoji_name(guild, emoji_string):
         ret = ((emoji + ' (`') + emoji_string) + '`)'
     return ret
 
+def make_gmaps_url_api_conform(url):
+    url = url.replace("/maps?q=","/maps/search/?api=1&query=")
+    url = url.replace("/maps/?q=","/maps/search/?api=1&query=")
+    url = url.replace("maps.google.com?q=", "www.google.com/maps/search/?api=1&query=")
+    url = url.replace("maps.google.com/?q=", "www.google.com/maps/search/?api=1&query=")
+    return url
+
 # Given an arbitrary string, create a Google Maps
 # query using the configured hints
 
@@ -5016,6 +5023,7 @@ async def research(ctx, *, details = None):
                 error = _("entered an incorrect amount of arguments.\n\nUsage: **!research** or **!research <pokestop>, <quest>, <reward>**")
                 break
             reward, quest, location = research_split
+            location = make_gmaps_url_api_conform(location)
             loc_url = create_gmaps_query(location, message.channel, type="research")
             location = location.replace(loc_url,"").strip()
             #remove plus code
