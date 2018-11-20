@@ -13,6 +13,7 @@ import tempfile
 import textwrap
 import time
 import traceback
+import urllib.parse
 
 from contextlib import redirect_stdout
 from io import BytesIO
@@ -339,7 +340,7 @@ def create_gmaps_query(details, channel, type="raid"):
             elif plusend - plusindex == 3:
                 pluscode = details[plusindex - 4:]
         if pluscode != "":
-            return "https://www.google.com/maps/search/?api=1&query={0}".format(pluscode.replace("+", "%2B").replace(" ", "%20"))
+            return "https://www.google.com/maps/search/?api=1&query={0}".format(urllib.parse.quote_plus(pluscode))
     details_list = details.split()
     #look for lat/long coordinates in the location details. If provided,
     #then channel location hints are not needed in the  maps query
