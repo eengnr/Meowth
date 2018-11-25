@@ -306,7 +306,17 @@ def make_gmaps_url_api_conform(url):
     url = url.replace("/maps/?q=","/maps/search/?api=1&query=")
     url = url.replace("maps.google.com?q=", "www.google.com/maps/search/?api=1&query=")
     url = url.replace("maps.google.com/?q=", "www.google.com/maps/search/?api=1&query=")
-    return url
+    if url.find("maps.apple.com") == (- 1):
+        return url
+    else:
+        llstart = url.find("ll=")
+        llend = url.find("&", llstart)
+        llstart = llstart + 3
+        if llend > 0:
+            ll = url[llstart:llend]
+        else:
+            ll = url[llstart:]
+        return "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote_plus(ll)
 
 # Given an arbitrary string, create a Google Maps
 # query using the configured hints
@@ -5027,6 +5037,7 @@ async def research(ctx, *, details = None):
             location = make_gmaps_url_api_conform(location)
             loc_url = create_gmaps_query(location, message.channel, type="research")
             location = location.replace(loc_url,"").strip()
+            location = location.replace("Gesetzte Markierung","").strip()
             #remove plus code
             plusindex = location.find('+')
             if plusindex != (- 1) and location[plusindex - 5] == " ":
