@@ -4322,7 +4322,7 @@ async def _raid(message, content):
             gym = gyms[match]
             raid_details = match
             gym_coords = gym['coordinates']
-            gym_note = gym.get('notes', _('No notes for this gym.'))
+            gym_note = gym.get('notes', '')
             raid_gmaps_link = create_gmaps_query(gym_coords, message.channel, type="raid")
             gym_info = _("**Name:** {0}\n**Notes:** {1}").format(raid_details, gym_note)
     else:
@@ -4353,7 +4353,10 @@ async def _raid(message, content):
     report_embed = raid_embed
     raidreport = await message.channel.send(content=_('Meowth! {pokemon} raid reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(pokemon=entered_raid.capitalize(), member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention), embed=report_embed)
     await asyncio.sleep(1)
-    raidmsg = _("{roletest}Meowth! {pokemon} raid reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(roletest=roletest, pokemon=entered_raid.title(), member=message.author.mention, citychannel=message.channel.mention, location_details=raid_details)
+    loc_details=raid_details
+    if gym_note != '':
+        loc_details = loc_details + ' ' + gym_note
+    raidmsg = _("{roletest}Meowth! {pokemon} raid reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(roletest=roletest, pokemon=entered_raid.title(), member=message.author.mention, citychannel=message.channel.mention, location_details=loc_details)
     raidmessage = await raid_channel.send(content=raidmsg, embed=raid_embed)
     await raidmessage.add_reaction('\u2754')
     await raidmessage.pin()
@@ -4480,7 +4483,7 @@ async def _raidegg(message, content):
             gym = gyms[match]
             raid_details = match
             gym_coords = gym['coordinates']
-            gym_note = gym.get('notes', _('No notes for this gym.'))
+            gym_note = gym.get('notes', '')
             raid_gmaps_link = create_gmaps_query(gym_coords, message.channel, type="raid")
             gym_info = _("**Name:** {0}\n**Notes:** {1}").format(raid_details, gym_note)
     else:
@@ -4521,7 +4524,10 @@ async def _raidegg(message, content):
         raid_embed.set_thumbnail(url=raid_img_url)
         raidreport = await message.channel.send(content=_('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(level=egg_level, member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention), embed=raid_embed)
         await asyncio.sleep(1)
-        raidmsg = _("Meowth! Level {level} raid egg reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(level=egg_level, member=message.author.mention, citychannel=message.channel.mention, location_details=raid_details)
+        loc_details=raid_details
+        if gym_note != '':
+            loc_details = loc_details + ' ' + gym_note
+        raidmsg = _("Meowth! Level {level} raid egg reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(level=egg_level, member=message.author.mention, citychannel=message.channel.mention, location_details=loc_details)
         raidmessage = await raid_channel.send(content=raidmsg, embed=raid_embed)
         await raidmessage.add_reaction('\u2754')
         await raidmessage.pin()
