@@ -4314,6 +4314,7 @@ async def _raid(message, content):
         await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raid <pokemon name> <location>**'))
         return
     gyms = get_gyms(message.guild.id)
+    gym_note = ''
     if gyms:
         match = await gym_match_prompt(message.channel, message.author.id, raid_details, gyms)
         if not match:
@@ -4475,6 +4476,7 @@ async def _raidegg(message, content):
         await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raid <pokemon name> <location>**'))
         return
     gyms = get_gyms(message.guild.id)
+    gym_note = ''
     if gyms:
         match = await gym_match_prompt(message.channel, message.author.id, raid_details, gyms)
         if not match:
