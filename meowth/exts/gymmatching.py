@@ -35,25 +35,28 @@ class GymMatching:
     async def gym_match_test(self, ctx, gym_name):
         gyms = self.get_gyms(ctx.guild.id)
         if not gyms:
-            await ctx.send('Gym matching has not been set up for this server.')
+            await ctx.send('Gymmatching wurde für diesen Server nicht aktiviert.')
             return
         match, score = self.gym_match(gym_name, gyms)
         if match:
             gym_info = gyms[match]
             coords = gym_info['coordinates']
-            notes = gym_info.get('notes', 'No notes for this gym.')
-            gym_info_str = (f"**Coordinates:** {coords}\n"
-                            f"**Notes:** {notes}")
-            await ctx.send(f"Successful match with `{match}` "
-                           f"with a score of `{score}`\n{gym_info_str}")
+            notes = gym_info.get('notes', 'Keine Infos für diese Arena.')
+            original = gym_info.get('original', '')
+            gym_info_str = (f"**Koordinaten:** {coords}\n"
+                            f"**Infos:** {notes}")
+            if original != '':
+                gym_info_str += (f"\n**Originalname:** {original}")
+            await ctx.send(f"Übereinstimmung mit `{match}` "
+                           f"mit einem Wert von `{score}`\n{gym_info_str}")
         else:
-            await ctx.send("No match found.")            
+            await ctx.send("Keine Übereinstimmung gefunden.")            
     
     @gymmatch.command(name='import', aliases=['update'])
     async def importgyms(self, ctx):
         attachment = ctx.message.attachments
         if not attachment:
-            await ctx.send('No attachment.')
+            await ctx.send('Kein Anhang.')
         else:
             try:
                 newgymsurl = attachment[0].url
