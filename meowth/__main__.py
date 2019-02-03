@@ -4321,7 +4321,7 @@ async def _raid(message, content):
             raid_gmaps_link = create_gmaps_query(raid_details, message.channel, type="raid")
         else:
             gym = gyms[match]
-            raid_details = match
+            raid_details = gym.get('original', match)
             gym_coords = gym['coordinates']
             gym_note = gym.get('notes', '')
             raid_gmaps_link = create_gmaps_query(gym_coords, message.channel, type="raid")
@@ -4483,7 +4483,7 @@ async def _raidegg(message, content):
             raid_gmaps_link = create_gmaps_query(raid_details, message.channel, type="raid")
         else:
             gym = gyms[match]
-            raid_details = match
+            raid_details = gym.get('original', match)
             gym_coords = gym['coordinates']
             gym_note = gym.get('notes', '')
             raid_gmaps_link = create_gmaps_query(gym_coords, message.channel, type="raid")
