@@ -3564,7 +3564,10 @@ async def changeraid(ctx, newraid):
         for p in raid_info['raid_eggs'][newraid]['pokemon']:
             p_name = get_name(p).title()
             p_type = get_type(message.guild, p)
-            boss_list.append((((p_name + ' (') + str(p)) + ') ') + ''.join(p_type))
+            p_number = str(p)
+            if p == 810:
+                p_number = str(103)
+            boss_list.append((((p_name + ' (') + p_number) + ') ') + ''.join(p_type))
         raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/eggs/{}?cache=0'.format(str(egg_img))
         raid_message = await channel.get_message(guild_dict[guild.id]['raidchannel_dict'][channel.id]['raidmessage'])
         report_channel = Meowth.get_channel(raid_message.raw_channel_mentions[0])
@@ -4343,9 +4346,13 @@ async def _raid(message, content):
     else:
         roletest = _("{pokemon} - ").format(pokemon=raid.mention)
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
+    raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
+    if raid_number == 810:
+        raid_number = 103
+        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the raid!'), url=raid_gmaps_link, colour=message.guild.me.colour)
-    raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.capitalize(), pokemonnumber=str(raid_number), type=''.join(get_type(message.guild, raid_number)), inline=True))
+    raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(message.guild, raid_number_type)), inline=True))
     raid_embed.add_field(name=_('**Weaknesses:**'), value=_('{weakness_list}').format(weakness_list=weakness_to_str(message.guild, get_weaknesses(entered_raid))), inline=True)
     raid_embed.add_field(name=_('**Next Group:**'), value=_('Set with **!starttime**'), inline=True)
     raid_embed.add_field(name=_('**Expires:**'), value=_('Set with **!timerset**'), inline=True)
@@ -4501,7 +4508,10 @@ async def _raidegg(message, content):
         for p in egg_info['pokemon']:
             p_name = get_name(p).title()
             p_type = get_type(message.guild, p)
-            boss_list.append((((p_name + ' (') + str(p)) + ') ') + ''.join(p_type))
+            p_number = str(p)
+            if p == 810:
+                p_number = str(103)
+            boss_list.append((((p_name + ' (') + p_number) + ') ') + ''.join(p_type))
         raid_channel_name = _('level-{egg_level}-egg-').format(egg_level=egg_level)
         raid_channel_name += sanitize_channel_name(raid_details)
         raid_channel_category = get_category(message.channel, egg_level, category_type="raid")
@@ -4597,9 +4607,13 @@ async def _eggassume(args, raid_channel, author=None):
     else:
         roletest = _("{pokemon} - ").format(pokemon=raidrole.mention)
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
+    raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
+    if raid_number == 810:
+        raid_number = 103
+        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the coming raid!'), url=raid_gmaps_link, colour=raid_channel.guild.me.colour)
-    raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.capitalize(), pokemonnumber=str(raid_number), type=''.join(get_type(raid_channel.guild, raid_number)), inline=True))
+    raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(raid_channel.guild, raid_number_type)), inline=True))
     raid_embed.add_field(name=_('**Weaknesses:**'), value=_('{weakness_list}').format(weakness_list=weakness_to_str(raid_channel.guild, get_weaknesses(entered_raid))), inline=True)
     raid_embed.add_field(name=_('**Next Group:**'), value=oldembed.fields[2].value, inline=True)
     raid_embed.add_field(name=_('**Hatches:**'), value=oldembed.fields[3].value, inline=True)
@@ -4728,9 +4742,13 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
     else:
         roletest = _("{pokemon} - ").format(pokemon=raid.mention)
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
+    raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
+    if raid_number == 810:
+        raid_number = 103
+        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the raid!'), url=raid_gmaps_link, colour=raid_channel.guild.me.colour)
-    raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.capitalize(), pokemonnumber=str(raid_number), type=''.join(get_type(raid_channel.guild, raid_number)), inline=True))
+    raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(raid_channel.guild, raid_number_type)), inline=True))
     raid_embed.add_field(name=_('**Weaknesses:**'), value=_('{weakness_list}').format(weakness_list=weakness_to_str(raid_channel.guild, get_weaknesses(entered_raid))), inline=True)
     raid_embed.add_field(name=oldembed.fields[2].name, value=oldembed.fields[2].value, inline=True)
     if meetup:
