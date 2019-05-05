@@ -4040,12 +4040,12 @@ async def want(ctx,*,pokemon):
             want_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=1'.format(str(want_number).zfill(3))
             want_embed = discord.Embed(colour=guild.me.colour)
             want_embed.set_thumbnail(url=want_img_url)
-            await channel.send(content=_('Meowth! Got it! {member} wants {pokemon}').format(member=ctx.author.mention, pokemon=added_list[0].capitalize()), embed=want_embed)
+            await channel.send(content=_('Meowth! Got it! {member} wants {pokemon}').format(member=ctx.author.mention, pokemon=added_list[0].title()), embed=want_embed)
             return
             #If you want reaction
             #await ctx.message.add_reaction('☑')
         elif len(already_want_list) == 1:
-            await channel.send(content=_('Meowth! {member}, I already know you want {pokemon}!').format(member=ctx.author.mention, pokemon=already_want_list[0].capitalize()))
+            await channel.send(content=_('Meowth! {member}, I already know you want {pokemon}!').format(member=ctx.author.mention, pokemon=already_want_list[0].title()))
             return
     else:
         confirmation_msg = _('Meowth! {member}, out of your total {count} items:').format(member=ctx.author.mention, count=(added_count + already_want_count) + len(spellcheck_dict))
@@ -4080,6 +4080,9 @@ async def unwant(ctx,*,pokemon):
                 if pkmn.isdigit():
                     pkmn = get_name(pkmn).lower()
                 unwant_list.append(pkmn)
+        elif len(unwant_split) > 1:
+           pkmn = ''.join(unwant_split)
+           unwant_list.append(pkmn)
         else:
             unwant_list.append(unwant_split[0])
         for unwant in unwant_list:
