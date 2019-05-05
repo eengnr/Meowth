@@ -376,15 +376,33 @@ def raise_admin_violation(message):
 
 def alola(action, number):
     if action == "check":
-        if number == 810:
+        # Alola hack, added after last official pokémon
+        if number >= 810:
             return True
         else:
             return False
     if action == "correct":
-        if number == 810:
-            return 103
-        else:
-            return number
+        alolamap = {
+            810: 19,
+            811: 20,
+            812: 26,
+            813: 27,
+            814: 28,
+            815: 37,
+            816: 38,
+            817: 50,
+            818: 51,
+            819: 52,
+            820: 53,
+            821: 74,
+            822: 75,
+            823: 76,
+            824: 88,
+            825: 89,
+            826: 103,
+            827: 105
+        }
+        return alolamap.get(number, number)
 
 def spellcheck(word):
     suggestion = pkmn_match.get_pkmn(re.sub(r"[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642 ]+", '', word))
