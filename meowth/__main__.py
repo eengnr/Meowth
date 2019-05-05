@@ -374,6 +374,18 @@ def raise_admin_violation(message):
     raise Exception(_('Received admin command {command} from unauthorized user, {user}!').format(
         command=message.content, user=message.author))
 
+def alola(action, number):
+    if action == "check":
+        if number == 810:
+            return True
+        else:
+            return False
+    if action == "correct":
+        if number == 810:
+            return 103
+        else:
+            return number
+
 def spellcheck(word):
     suggestion = pkmn_match.get_pkmn(re.sub(r"[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642 ]+", '', word))
     # If we have a spellcheck suggestion
@@ -3565,8 +3577,8 @@ async def changeraid(ctx, newraid):
             p_name = get_name(p).title()
             p_type = get_type(message.guild, p)
             p_number = str(p)
-            if p == 810:
-                p_number = str(103)
+            if alola("check", p):
+                p_number = str(alola("correct", p))
             boss_list.append((((p_name + ' (') + p_number) + ') ') + ''.join(p_type))
         raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/eggs/{}?cache=0'.format(str(egg_img))
         raid_message = await channel.get_message(guild_dict[guild.id]['raidchannel_dict'][channel.id]['raidmessage'])
@@ -4351,8 +4363,8 @@ async def _raid(message, content):
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
     raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
-    if raid_number == 810:
-        raid_number = 103
+    if alola("check", raid_number):
+        raid_number = alola("correct", raid_number)
         raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the raid!'), url=raid_gmaps_link, colour=message.guild.me.colour)
     raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(message.guild, raid_number_type)), inline=True))
@@ -4512,8 +4524,8 @@ async def _raidegg(message, content):
             p_name = get_name(p).title()
             p_type = get_type(message.guild, p)
             p_number = str(p)
-            if p == 810:
-                p_number = str(103)
+            if alola("check", p):
+                p_number = str(alola("correct", p))
             boss_list.append((((p_name + ' (') + p_number) + ') ') + ''.join(p_type))
         raid_channel_name = _('level-{egg_level}-egg-').format(egg_level=egg_level)
         raid_channel_name += sanitize_channel_name(raid_details)
@@ -4612,8 +4624,8 @@ async def _eggassume(args, raid_channel, author=None):
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
     raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
-    if raid_number == 810:
-        raid_number = 103
+    if alola("check", raid_number):
+        raid_number = alola("correct", raid_number)
         raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the coming raid!'), url=raid_gmaps_link, colour=raid_channel.guild.me.colour)
     raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(raid_channel.guild, raid_number_type)), inline=True))
@@ -4747,8 +4759,8 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
     raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
-    if raid_number == 810:
-        raid_number = 103
+    if alola("check", raid_number):
+        raid_number = alola("correct", raid_number)
         raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the raid!'), url=raid_gmaps_link, colour=raid_channel.guild.me.colour)
     raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(raid_channel.guild, raid_number_type)), inline=True))
