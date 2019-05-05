@@ -6375,7 +6375,12 @@ async def coming(ctx, *, teamcounts: str=None):
     if pkmn_match and guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['type'] == "egg":
         entered_interest = []
         unmatched_mons = False
+        # Alola hack: replace space with underscore to have one word
+        teamcounts = teamcounts.lower().replace("alola ", "alola_")
         for word in re.split(' |,', teamcounts.lower()):
+            # Alola hack undo
+            word = word.replace("alola_", "alola ")
+            teamcounts = teamcounts.lower().replace("alola_", "alola ")
             if word.lower() in pkmn_info['pokemon_list']:
                 if word.lower() not in entered_interest:
                     entered_interest.append(word.lower())
