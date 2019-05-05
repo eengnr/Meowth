@@ -4068,6 +4068,9 @@ async def want(ctx,*,pokemon):
             #If you want Images
             want_number = pkmn_info['pokemon_list'].index(added_list[0].lower()) + 1
             want_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=1'.format(str(want_number).zfill(3))
+            if alola("check", want_number):
+                want_number = alola("correct", want_number)
+                want_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=1'.format(str(want_number).zfill(3))
             want_embed = discord.Embed(colour=guild.me.colour)
             want_embed.set_thumbnail(url=want_img_url)
             await channel.send(content=_('Meowth! Got it! {member} wants {pokemon}').format(member=ctx.author.mention, pokemon=added_list[0].title()), embed=want_embed)
