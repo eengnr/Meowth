@@ -6654,10 +6654,10 @@ async def _edit_party(channel, author=None):
     if egglevel != "0":
         for boss in boss_list:
             if boss_dict[boss]['total'] > 0:
-                bossstr = "{name} ({number}) {types} : **{count}**".format(name=boss.title(),number=get_number(boss),types=boss_dict[boss]['type'],count=boss_dict[boss]['total'])
+                bossstr = "{name} ({number}) {types} : **{count}**".format(name=boss.title(),number=alola("correct", get_number(boss)),types=boss_dict[boss]['type'],count=boss_dict[boss]['total'])
                 display_list.append(bossstr)
             elif boss_dict[boss]['total'] == 0:
-                bossstr = "{name} ({number}) {types}".format(name=boss.title(),number=get_number(boss),types=boss_dict[boss]['type'])
+                bossstr = "{name} ({number}) {types}".format(name=boss.title(),number=alola("correct", get_number(boss)),types=boss_dict[boss]['type'])
                 display_list.append(bossstr)
     channel_dict["total"] = channel_dict["maybe"] + channel_dict["coming"] + channel_dict["here"]
     reportchannel = Meowth.get_channel(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['reportcity'])
