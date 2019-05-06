@@ -802,7 +802,7 @@ async def expire_channel(channel):
             delete_time = (guild_dict[guild.id]['raidchannel_dict'][channel.id]['exp'] + (5 * 60)) - time.time()
             raidtype = _("event") if guild_dict[guild.id]['raidchannel_dict'][channel.id].get('meetup',False) else _(" raid")
             expiremsg = _('**This {pokemon}{raidtype} has expired!**').format(
-                pokemon=guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['pokemon'].capitalize(), raidtype=raidtype)
+                pokemon=guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['pokemon'].title(), raidtype=raidtype)
         await asyncio.sleep(delete_time)
         # If the channel has already been deleted from the dict, someone
         # else got to it before us, so don't do anything.
@@ -4262,7 +4262,8 @@ async def raid(ctx,pokemon,*,location:commands.clean_content(fix_channel_mention
     if pokemon.isdigit():
         new_channel = await _raidegg(ctx.message, content)
     else:
-        new_channel = await _raid(ctx.message, content)
+        #Alola hack necessary
+        new_channel = await _raid(ctx.message, content.replace("Alola ","Alola_"))
     ctx.raid_channel = new_channel
 
 async def _raid(message, content):
