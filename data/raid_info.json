@@ -4,10 +4,10 @@
             "egg": "normal",
             "egg_img": "1.png",
             "pokemon": [
-                353,
-                355,
+                66,
+                287,
                 403,
-                425
+                436
             ],
             "hatchtime": 60,
             "raidtime": 45
@@ -16,11 +16,12 @@
             "egg": "normal",
             "egg_img": "2.png",
             "pokemon": [
-                826,
                 200,
-                204,
-                215,
-                303
+                281,
+                303,
+                349,
+                366,
+                400
             ],
             "hatchtime": 60,
             "raidtime": 45
@@ -30,10 +31,10 @@
             "egg_img": "3.png",
             "pokemon": [
                 812,
-                68,
-                94,
+                113,
                 123,
-                319
+                142,
+                419
             ],
             "hatchtime": 60,
             "raidtime": 45
@@ -43,10 +44,10 @@
             "egg_img": "4.png",
             "pokemon": [
                 827,
-                229,
+                149,
                 248,
-                275,
-                359
+                359,
+                376
             ],
             "hatchtime": 60,
             "raidtime": 45
