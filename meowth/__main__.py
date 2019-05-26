@@ -5279,47 +5279,20 @@ async def timerset(ctx, *,timer):
             maxtime = raid_info['raid_eggs'][raidlevel]['raidtime']
         if timer.isdigit():
             raidexp = int(timer)
-        elif type == 'egg' and ':' in timer:
-            msg = _("Did you mean egg hatch time {0} or time remaining before hatch {1}?").format("🥚", "⏲")
-            question = await ctx.channel.send(msg)
-            try:
-                timeout = False
-                res, reactuser = await ask(question, ctx.message.channel, ctx.message.author.id, react_list=['🥚', '⏲'])
-            except TypeError:
-                timeout = True
-            await question.delete()
-            if timeout or res.emoji == '⏲':
-                hourminute = True
-            elif res.emoji == '🥚':
-                now = datetime.datetime.utcnow() + datetime.timedelta(hours=guild_dict[channel.guild.id]['configure_dict']['settings']['offset'])
-                start = dateparser.parse(timer, settings={'PREFER_DATES_FROM': 'future'})
-                if now.hour > 12 and start.hour < 12 and "m" not in timer:
-                    start = start + datetime.timedelta(hours=12)
-                start = start.replace(day=now.day)
-                timediff = relativedelta(start, now)
-                raidexp = (timediff.hours*60) + timediff.minutes + 1
-                if raidexp < 0:
-                    await channel.send(_('Meowth! Please enter a time in the future.'))
-                    return
-            else:
-                await channel.send(_("Meowth! I couldn't understand your time format. Try again like this: **!timerset <minutes>**"))
-                return
         elif ':' in timer:
-            hourminute = True
+            now = datetime.datetime.utcnow() + datetime.timedelta(hours=guild_dict[channel.guild.id]['configure_dict']['settings']['offset'])
+            start = dateparser.parse(timer, settings={'PREFER_DATES_FROM': 'future'})
+            if now.hour > 12 and start.hour < 12 and "m" not in timer:
+                start = start + datetime.timedelta(hours=12)
+            start = start.replace(day=now.day)
+            timediff = relativedelta(start, now)
+            raidexp = (timediff.hours*60) + timediff.minutes + 1
+            if raidexp < 0:
+                await channel.send(_('Meowth! Please enter a time in the future.'))
+                return
         else:
             await channel.send(_("Meowth! I couldn't understand your time format. Try again like this: **!timerset <minutes>**"))
             return
-        if hourminute:
-            (h, m) = re.sub('[a-zA-Z]', '', timer).split(':', maxsplit=1)
-            if h == '':
-                h = '0'
-            if m == '':
-                m = '0'
-            if h.isdigit() and m.isdigit():
-                raidexp = (60 * int(h)) + int(m)
-            else:
-                await channel.send(_("Meowth! I couldn't understand your time format. Try again like this: **!timerset <minutes>**"))
-                return
         if _timercheck(raidexp, maxtime):
             await channel.send(_("Meowth...that's too long. Level {raidlevel} {raidtype}s currently last no more than {maxtime} minutes...").format(raidlevel=str(raidlevel), raidtype=raidtype.capitalize(), maxtime=str(maxtime)))
             return
