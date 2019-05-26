@@ -4468,37 +4468,17 @@ async def _raidegg(message, content):
         raidexp = int(raidegg_split[(- 1)])
         del raidegg_split[(- 1)]
     elif ':' in raidegg_split[(- 1)]:
-        msg = _("Did you mean egg hatch time {0} or time remaining before hatch {1}?").format("🥚", "⏲")
-        question = await message.channel.send(msg)
-        try:
-            timeout = False
-            res, reactuser = await ask(question, message.channel, message.author.id, react_list=['🥚', '⏲'])
-        except TypeError:
-            timeout = True
-        await question.delete()
-        if timeout or res.emoji == '⏲':
-            hourminute = True
-        elif res.emoji == '🥚':
-            now = datetime.datetime.utcnow() + datetime.timedelta(hours=guild_dict[message.channel.guild.id]['configure_dict']['settings']['offset'])
-            start = dateparser.parse(raidegg_split[(- 1)], settings={'PREFER_DATES_FROM': 'future'})
-            if start.day != now.day:
-                if "m" not in raidegg_split[(- 1)]:
-                    start = start + datetime.timedelta(hours=12)
-                start = start.replace(day=now.day)
-            timediff = relativedelta(start, now)
-            raidexp = (timediff.hours*60) + timediff.minutes + 1
-            if raidexp < 0:
-                await message.channel.send(_('Meowth! Please enter a time in the future.'))
-                return
-            del raidegg_split[(- 1)]
-    if hourminute:
-        (h, m) = re.sub('[a-zA-Z]', '', raidegg_split[(- 1)]).split(':', maxsplit=1)
-        if h == '':
-            h = '0'
-        if m == '':
-            m = '0'
-        if h.isdigit() and m.isdigit():
-            raidexp = (60 * int(h)) + int(m)
+        now = datetime.datetime.utcnow() + datetime.timedelta(hours=guild_dict[message.channel.guild.id]['configure_dict']['settings']['offset'])
+        start = dateparser.parse(raidegg_split[(- 1)], settings={'PREFER_DATES_FROM': 'future'})
+        if start.day != now.day:
+            if "m" not in raidegg_split[(- 1)]:
+                start = start + datetime.timedelta(hours=12)
+            start = start.replace(day=now.day)
+        timediff = relativedelta(start, now)
+        raidexp = (timediff.hours*60) + timediff.minutes + 1
+        if raidexp < 0:
+            await message.channel.send(_('Meowth! Please enter a time in the future.'))
+            return
         del raidegg_split[(- 1)]
     if raidexp is not False:
         if _timercheck(raidexp, raid_info['raid_eggs'][str(egg_level)]['hatchtime']):
