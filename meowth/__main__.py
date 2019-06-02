@@ -508,7 +508,7 @@ def get_gyms(guild_id):
 
 async def gym_match_prompt(channel, author_id, gym_name, gyms):
     gym_matching_cog = Meowth.cogs.get('GymMatching')
-    match, score = gym_matching_cog.gym_match(gym_name, gyms)
+    match, score = gym_matching_cog.gym_match(gym_name, gyms, channel)
     if not match:
         return None
     if score < 80:

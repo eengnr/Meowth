@@ -11,7 +11,7 @@ class GymMatching:
     def __init__(self, bot):
         self.bot = bot
         self.gym_data = self.init_json()
-        
+
     def __local_check(self, ctx):
         return checks.is_owner_check(ctx)
 
@@ -22,15 +22,23 @@ class GymMatching:
     def get_gyms(self, guild_id):
         return self.gym_data.get(str(guild_id))
 
-    def gym_match(self, gym_name, gyms):
-        return utils.get_match(list(gyms.keys()), gym_name)
+    def gym_match(self, gym_name, gyms, channel):
+        gym_list = gyms.copy()
+        match, score = utils.get_match(list(gym_list.keys()), gym_name)
+        # check if area is set for gym, necessary for gyms with same name in different areas
+        area = gym_list[match].get('area', channel.name)
+        if area == channel.name:
+            return (match, score)
+        else:
+            del gym_list[match]
+            return self.gym_match(gym_name, gym_list, channel)
 
     @commands.group(case_insensitive=True, invoke_without_command=True, aliases=['gymmatching', 'gm'])
     async def gymmatch(ctx):
         if ctx.invoked_subcommand == None:
             raise commands.BadArgument()
             return
-        
+
     @gymmatch.command(name='test')
     async def gym_match_test(self, ctx, gym_name):
         gyms = self.get_gyms(ctx.guild.id)
@@ -50,8 +58,8 @@ class GymMatching:
             await ctx.send(f"Übereinstimmung mit `{match}` "
                            f"mit einem Wert von `{score}`\n{gym_info_str}")
         else:
-            await ctx.send("Keine Übereinstimmung gefunden.")            
-    
+            await ctx.send("Keine Übereinstimmung gefunden.")
+
     @gymmatch.command(name='import', aliases=['update'])
     async def importgyms(self, ctx):
         attachment = ctx.message.attachments
@@ -61,12 +69,12 @@ class GymMatching:
             try:
                 newgymsurl = attachment[0].url
                 req = urllib.request.Request(newgymsurl)
-                req.add_header('User-Agent', 'Mozilla/5.0') 
+                req.add_header('User-Agent', 'Mozilla/5.0')
                 self.gym_data = json.load(urllib.request.urlopen(req))
                 await ctx.message.add_reaction('\u2705')
             except:
                 await ctx.message.add_reaction('❌')
-            
+
     @gymmatch.command(name='save', aliases=['commit'])
     async def savegyms(self, ctx):
         with open(os.path.join('data', 'gym_data.json'), 'w') as fd:
