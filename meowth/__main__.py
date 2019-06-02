@@ -4083,9 +4083,9 @@ async def want(ctx,*,pokemon):
     else:
         confirmation_msg = _('Meowth! {member}, out of your total {count} items:').format(member=ctx.author.mention, count=(added_count + already_want_count) + len(spellcheck_dict))
         if added_count > 0:
-            confirmation_msg += _('\n**{added_count} Added:** \n\t{added_list}').format(added_count=added_count, added_list=', '.join(added_list))
+            confirmation_msg += _('\n**{added_count} Added:** \n\t{added_list}').format(added_count=added_count, added_list=', '.join(added_list).title())
         if already_want_count > 0:
-            confirmation_msg += _('\n**{already_want_count} Already Following:** \n\t{already_want_list}').format(already_want_count=already_want_count, already_want_list=', '.join(already_want_list))
+            confirmation_msg += _('\n**{already_want_count} Already Following:** \n\t{already_want_list}').format(already_want_count=already_want_count, already_want_list=', '.join(already_want_list).title())
         if spellcheck_dict:
             spellcheckmsg = ''
             for word in spellcheck_dict:
