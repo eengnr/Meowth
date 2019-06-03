@@ -23,15 +23,17 @@ class GymMatching:
         return self.gym_data.get(str(guild_id))
 
     def gym_match(self, gym_name, gyms, channel):
-        gym_list = gyms.copy()
-        match, score = utils.get_match(list(gym_list.keys()), gym_name)
+        match, score = utils.get_match(list(gyms.keys()), gym_name)
         # check if area is set for gym, necessary for gyms with same name in different areas
-        area = gym_list[match].get('area', channel.name)
+        area = gyms[match].get('area', channel.name)
         if area == channel.name:
             return (match, score)
         else:
-            del gym_list[match]
-            return self.gym_match(gym_name, gym_list, channel)
+            gyms_less = gyms.copy()
+            del gyms_less[match]
+            match, score = self.gym_match(gym_name, gyms_less, channel)
+            gyms_less.clear()
+            return (match, score)
 
     @commands.group(case_insensitive=True, invoke_without_command=True, aliases=['gymmatching', 'gm'])
     async def gymmatch(ctx):
