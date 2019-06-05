@@ -24,16 +24,19 @@ class GymMatching:
 
     def gym_match(self, gym_name, gyms, channel):
         match, score = utils.get_match(list(gyms.keys()), gym_name)
-        # check if area is set for gym, necessary for gyms with same name in different areas
-        area = gyms[match].get('area', channel.name)
-        if area == channel.name:
-            return (match, score)
+        if match:
+            # check if area is set for gym, necessary for gyms with same name in different areas
+            area = gyms[match].get('area', channel.name)
+            if area == channel.name:
+                return (match, score)
+            else:
+                gyms_less = gyms.copy()
+                del gyms_less[match]
+                match, score = self.gym_match(gym_name, gyms_less, channel)
+                gyms_less.clear()
+                return (match, score)
         else:
-            gyms_less = gyms.copy()
-            del gyms_less[match]
-            match, score = self.gym_match(gym_name, gyms_less, channel)
-            gyms_less.clear()
-            return (match, score)
+            return (None, None)
 
     @commands.group(case_insensitive=True, invoke_without_command=True, aliases=['gymmatching', 'gm'])
     async def gymmatch(ctx):
