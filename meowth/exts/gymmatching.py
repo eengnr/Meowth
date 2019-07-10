@@ -50,7 +50,7 @@ class GymMatching:
         if not gyms:
             await ctx.send('Gymmatching wurde für diesen Server nicht aktiviert.')
             return
-        match, score = self.gym_match(gym_name, gyms)
+        match, score = self.gym_match(gym_name, gyms, ctx.message.channel)
         if match:
             gym_info = gyms[match]
             coords = gym_info['coordinates']
