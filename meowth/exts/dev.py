@@ -1,10 +1,7 @@
-import os
 from subprocess import Popen, PIPE, STDOUT
 from pathlib import Path
 
 from discord.ext import commands
-
-from meowth import utils
 from meowth import checks
 
 class DevTools:
