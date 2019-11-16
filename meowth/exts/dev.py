@@ -36,7 +36,8 @@ class DevTools:
 
     @git.command(name='reset')
     async def gitreset(self, ctx):
-        ctx.git_cmd.append('reset --hard')
+        ctx.git_cmd.append('reset')
+        ctx.git_cmd.append('--hard')
         p = Popen(ctx.git_cmd, stdout=PIPE, stderr=STDOUT, cwd=ctx.git_path)
         await ctx.codeblock(p.stdout.read().decode("utf-8"), syntax="")
 
