@@ -32,7 +32,7 @@ class DataHandler:
             number = None
         return int(number)
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(invoke_without_command=True, aliases=['rd'])
     async def raiddata(self, ctx, level=None):
         """Zeigt alle Pokémon, die für Raids festgelegt wurden. Zeigt Pokémon eines bestimmten Raid-Levels, falls angegeben."""
         data = []
