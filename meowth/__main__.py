@@ -400,7 +400,10 @@ def alola(action, number):
             824: 88,
             825: 89,
             826: 103,
-            827: 105
+            827: 105,
+            828: 110,
+            829: 263,
+            830: 264
         }
         return alolamap.get(number, number)
 
@@ -4263,7 +4266,7 @@ async def raid(ctx,pokemon,*,location:commands.clean_content(fix_channel_mention
         new_channel = await _raidegg(ctx.message, content)
     else:
         #Alola hack necessary
-        new_channel = await _raid(ctx.message, content.replace("Alola ","Alola_"))
+        new_channel = await _raid(ctx.message, content.replace("Alola ","Alola_").replace("Galar ", "Galar_"))
     ctx.raid_channel = new_channel
 
 async def _raid(message, content):
