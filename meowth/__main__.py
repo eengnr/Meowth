@@ -374,38 +374,59 @@ def raise_admin_violation(message):
     raise Exception(_('Received admin command {command} from unauthorized user, {user}!').format(
         command=message.content, user=message.author))
 
-def alola(action, number):
+def regionalform(action, number):
+
+    start_alola = 891
+    start_galar = 909
+
     if action == "check":
-        # Alola hack, added after last official pokémon
-        if number >= 810:
+        # Alola/Galar hack, added after last official pokémon
+        if number >= start_alola:
             return True
         else:
             return False
+    if action == "region":
+        if (number >= start_alola) and (number < start_galar):
+            return "a"
+        elif number >= start_galar:
+            return "g"
+        else:
+            return ""
     if action == "correct":
-        alolamap = {
-            810: 19,
-            811: 20,
-            812: 26,
-            813: 27,
-            814: 28,
-            815: 37,
-            816: 38,
-            817: 50,
-            818: 51,
-            819: 52,
-            820: 53,
-            821: 74,
-            822: 75,
-            823: 76,
-            824: 88,
-            825: 89,
-            826: 103,
-            827: 105,
-            828: 110,
-            829: 263,
-            830: 264
+        regionalformmap = {
+            891: 19,
+            892: 20,
+            893: 26,
+            894: 27,
+            895: 28,
+            896: 37,
+            897: 38,
+            898: 50,
+            899: 51,
+            900: 52,
+            901: 53,
+            902: 74,
+            903: 75,
+            904: 76,
+            905: 88,
+            906: 89,
+            907: 103,
+            908: 105,
+            909: 52,
+            910: 77,
+            911: 78,
+            912: 83,
+            913: 110,
+            914: 122,
+            915: 222,
+            916: 263,
+            917: 264,
+            918: 554,
+            919: 555,
+            920: 562,
+            921: 618
         }
-        return alolamap.get(number, number)
+        return regionalformmap.get(number, number)
 
 def spellcheck(word):
     suggestion = pkmn_match.get_pkmn(re.sub(r"[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642 ]+", '', word))
@@ -3598,8 +3619,8 @@ async def changeraid(ctx, newraid):
             p_name = get_name(p).title()
             p_type = get_type(message.guild, p)
             p_number = str(p)
-            if alola("check", p):
-                p_number = str(alola("correct", p))
+            if regionalform("check", p):
+                p_number = str(regionalform("correct", p))
             boss_list.append((((p_name + ' (') + p_number) + ') ') + ''.join(p_type))
         raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/eggs/{}?cache=0'.format(str(egg_img))
         raid_message = await channel.get_message(guild_dict[guild.id]['raidchannel_dict'][channel.id]['raidmessage'])
@@ -4071,9 +4092,10 @@ async def want(ctx,*,pokemon):
             #If you want Images
             want_number = pkmn_info['pokemon_list'].index(added_list[0].lower()) + 1
             want_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=1'.format(str(want_number).zfill(3))
-            if alola("check", want_number):
-                want_number = alola("correct", want_number)
-                want_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=1'.format(str(want_number).zfill(3))
+            if regionalform("check", want_number):
+                region = regionalform("region", want_number)
+                want_number = regionalform("correct", want_number)
+                want_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_{1}.png?cache=1'.format(str(want_number).zfill(3), region)
             want_embed = discord.Embed(colour=guild.me.colour)
             want_embed.set_thumbnail(url=want_img_url)
             await channel.send(content=_('Meowth! Got it! {member} wants {pokemon}').format(member=ctx.author.mention, pokemon=added_list[0].title()), embed=want_embed)
@@ -4388,9 +4410,10 @@ async def _raid(message, content):
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
     raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
-    if alola("check", raid_number):
-        raid_number = alola("correct", raid_number)
-        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
+    if regionalform("check", raid_number):
+        region = regionalform("region", raid_number)
+        raid_number = regionalform("correct", raid_number)
+        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_{1}.png?cache=0'.format(str(raid_number).zfill(3), region)
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the raid!'), url=raid_gmaps_link, colour=message.guild.me.colour)
     raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(message.guild, raid_number_type)), inline=True))
     raid_embed.add_field(name=_('**Weaknesses:**'), value=_('{weakness_list}').format(weakness_list=weakness_to_str(message.guild, get_weaknesses(entered_raid))), inline=True)
@@ -4529,8 +4552,8 @@ async def _raidegg(message, content):
             p_name = get_name(p).title()
             p_type = get_type(message.guild, p)
             p_number = str(p)
-            if alola("check", p):
-                p_number = str(alola("correct", p))
+            if regionalform("check", p):
+                p_number = str(regionalform("correct", p))
             boss_list.append((((p_name + ' (') + p_number) + ') ') + ''.join(p_type))
         raid_channel_name = _('level-{egg_level}-egg-').format(egg_level=egg_level)
         raid_channel_name += sanitize_channel_name(raid_details)
@@ -4629,9 +4652,10 @@ async def _eggassume(args, raid_channel, author=None):
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
     raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
-    if alola("check", raid_number):
-        raid_number = alola("correct", raid_number)
-        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
+    if regionalform("check", raid_number):
+        region = regionalform("region", raid_number)
+        raid_number = regionalform("correct", raid_number)
+        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_{1}.png?cache=0'.format(str(raid_number).zfill(3), region)
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the coming raid!'), url=raid_gmaps_link, colour=raid_channel.guild.me.colour)
     raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(raid_channel.guild, raid_number_type)), inline=True))
     raid_embed.add_field(name=_('**Weaknesses:**'), value=_('{weakness_list}').format(weakness_list=weakness_to_str(raid_channel.guild, get_weaknesses(entered_raid))), inline=True)
@@ -4764,9 +4788,10 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
     raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
     raid_number_type = raid_number
     raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
-    if alola("check", raid_number):
-        raid_number = alola("correct", raid_number)
-        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_a.png?cache=0'.format(str(raid_number).zfill(3))
+    if regionalform("check", raid_number):
+        region = regionalform("region", raid_number)
+        raid_number = regionalform("correct", raid_number)
+        raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/pkmn/{0}_{1}.png?cache=0'.format(str(raid_number).zfill(3), region)
     raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the raid!'), url=raid_gmaps_link, colour=raid_channel.guild.me.colour)
     raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.title(), pokemonnumber=str(raid_number), type=''.join(get_type(raid_channel.guild, raid_number_type)), inline=True))
     raid_embed.add_field(name=_('**Weaknesses:**'), value=_('{weakness_list}').format(weakness_list=weakness_to_str(raid_channel.guild, get_weaknesses(entered_raid))), inline=True)
@@ -6637,10 +6662,10 @@ async def _edit_party(channel, author=None):
     if egglevel != "0":
         for boss in boss_list:
             if boss_dict[boss]['total'] > 0:
-                bossstr = "{name} ({number}) {types} : **{count}**".format(name=boss.title(),number=alola("correct", get_number(boss)),types=boss_dict[boss]['type'],count=boss_dict[boss]['total'])
+                bossstr = "{name} ({number}) {types} : **{count}**".format(name=boss.title(),number=regionalform("correct", get_number(boss)),types=boss_dict[boss]['type'],count=boss_dict[boss]['total'])
                 display_list.append(bossstr)
             elif boss_dict[boss]['total'] == 0:
-                bossstr = "{name} ({number}) {types}".format(name=boss.title(),number=alola("correct", get_number(boss)),types=boss_dict[boss]['type'])
+                bossstr = "{name} ({number}) {types}".format(name=boss.title(),number=regionalform("correct", get_number(boss)),types=boss_dict[boss]['type'])
                 display_list.append(bossstr)
     channel_dict["total"] = channel_dict["maybe"] + channel_dict["coming"] + channel_dict["here"]
     reportchannel = Meowth.get_channel(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['reportcity'])

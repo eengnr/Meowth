@@ -28,5 +28,17 @@ class DevTools:
         p = Popen(ctx.git_cmd, stdout=PIPE, stderr=STDOUT, cwd=ctx.git_path)
         await ctx.codeblock(p.stdout.read().decode("utf-8"), syntax="")
 
+    @git.command(name='diff')
+    async def gitdiff(self, ctx):
+        ctx.git_cmd.append('diff')
+        p = Popen(ctx.git_cmd, stdout=PIPE, stderr=STDOUT, cwd=ctx.git_path)
+        await ctx.codeblock(p.stdout.read().decode("utf-8"), syntax="")
+
+    @git.command(name='reset')
+    async def gitreset(self, ctx):
+        ctx.git_cmd.append('reset --hard')
+        p = Popen(ctx.git_cmd, stdout=PIPE, stderr=STDOUT, cwd=ctx.git_path)
+        await ctx.codeblock(p.stdout.read().decode("utf-8"), syntax="")
+
 def setup(bot):
     bot.add_cog(DevTools(bot))
