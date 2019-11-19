@@ -4,7 +4,7 @@ from pathlib import Path
 from discord.ext import commands
 from meowth import checks
 
-class DevTools:
+class DevTools(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

@@ -157,12 +157,17 @@ async def _load(ctx, *extensions):
     """Lädt eine Erweiterung."""
     for ext in extensions:
         try:
-            ctx.bot.unload_extension(f"meowth.exts.{ext}")
+#            ctx.bot.reload_extension(f"meowth.exts.{ext}")
             ctx.bot.load_extension(f"meowth.exts.{ext}")
         except Exception as e:
-            error_title = _('**Error when loading extension')
-            await ctx.send(f'{error_title} {ext}:**\n'
-                           f'{type(e).__name__}: {e}')
+            try:
+                ctx.bot.reload_extension(f"meowth.exts.{ext}")
+            except Exception as e:
+                error_title = _('**Error when loading extension')
+                await ctx.send(f'{error_title} {ext}:**\n'
+                            f'{type(e).__name__}: {e}')
+            else:
+                await ctx.send(_('**Extension {ext} Loaded.**\n').format(ext=ext))
         else:
             await ctx.send(_('**Extension {ext} Loaded.**\n').format(ext=ext))
 
@@ -170,9 +175,9 @@ async def _load(ctx, *extensions):
 @checks.is_owner()
 async def _unload(ctx, *extensions):
     """Entfernt eine Erweiterung."""
-    exts = [e for e in extensions if f"exts.{e}" in Meowth.extensions]
+    exts = [e for e in extensions if f"meowth.exts.{e}" in Meowth.extensions]
     for ext in exts:
-        ctx.bot.unload_extension(f"exts.{ext}")
+        ctx.bot.unload_extension(f"meowth.exts.{ext}")
     s = 's' if len(exts) > 1 else ''
     await ctx.send(_("**Extension{plural} {est} unloaded.**\n").format(plural=s, est=', '.join(exts)))
 
@@ -669,7 +674,7 @@ async def wild_expiry_check(message):
     logger.info('Expiry_Check - ' + message.channel.name)
     guild = message.channel.guild
     global active_wilds
-    message = await message.channel.get_message(message.id)
+    message = await message.channel.fetch_message(message.id)
     if message not in active_wilds:
         active_wilds.append(message)
         logger.info(
@@ -695,7 +700,7 @@ async def expire_wild(message):
     except discord.errors.NotFound:
         pass
     try:
-        user_message = await channel.get_message(wild_dict[message.id]['reportmessage'])
+        user_message = await channel.fetch_message(wild_dict[message.id]['reportmessage'])
         await user_message.delete()
     except (discord.errors.NotFound, discord.errors.Forbidden, discord.errors.HTTPException):
         pass
@@ -837,7 +842,7 @@ async def expire_channel(channel):
                     try:
                         report_channel = Meowth.get_channel(
                             guild_dict[guild.id]['raidchannel_dict'][channel.id]['reportcity'])
-                        reportmsg = await report_channel.get_message(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['raidreport'])
+                        reportmsg = await report_channel.fetch_message(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['raidreport'])
                         await reportmsg.delete()
                     except:
                         pass
@@ -845,7 +850,7 @@ async def expire_channel(channel):
                     try:
                         report_channel = Meowth.get_channel(
                             guild_dict[guild.id]['raidchannel_dict'][channel.id]['reportcity'])
-                        reportmsg = await report_channel.get_message(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['raidreport'])
+                        reportmsg = await report_channel.fetch_message(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['raidreport'])
                         await reportmsg.edit(embed=discord.Embed(description=expiremsg, colour=channel.guild.me.colour))
                     except:
                         pass
@@ -1080,13 +1085,13 @@ async def message_cleanup(loop=True):
                             pass
             for messageid in report_delete_dict.keys():
                 try:
-                    report_message = await report_delete_dict[messageid]['channel'].get_message(messageid)
+                    report_message = await report_delete_dict[messageid]['channel'].fetch_message(messageid)
                     await report_message.delete()
                 except (discord.errors.NotFound, discord.errors.Forbidden, discord.errors.HTTPException, KeyError):
                     pass
             for messageid in report_edit_dict.keys():
                 try:
-                    report_message = await report_edit_dict[messageid]['channel'].get_message(messageid)
+                    report_message = await report_edit_dict[messageid]['channel'].fetch_message(messageid)
                     await report_message.edit(content=report_edit_dict[messageid]['action']['content'],embed=discord.Embed(description=report_edit_dict[messageid]['action'].get('embedcontent'), colour=report_message.embeds[0].colour.value))
                     await report_message.clear_reactions()
                 except (discord.errors.NotFound, discord.errors.Forbidden, discord.errors.HTTPException, IndexError, KeyError):
@@ -1294,9 +1299,9 @@ async def on_message(message):
                 if "/maps" in message.content and "http" in message.content:
                     newcontent = message.content.replace("<","").replace(">","")
                     newloc = create_gmaps_query(newcontent, message.channel, type=guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['type'])
-                    oldraidmsg = await message.channel.get_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidmessage'])
+                    oldraidmsg = await message.channel.fetch_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidmessage'])
                     report_channel = Meowth.get_channel(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['reportcity'])
-                    oldreportmsg = await report_channel.get_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidreport'])
+                    oldreportmsg = await report_channel.fetch_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidreport'])
                     oldembed = oldraidmsg.embeds[0]
                     newembed = discord.Embed(title=oldembed.title, url=newloc, colour=message.guild.me.colour)
                     for field in oldembed.fields:
@@ -1341,7 +1346,7 @@ async def on_message_delete(message):
 async def on_raw_reaction_add(payload):
     channel = Meowth.get_channel(payload.channel_id)
     try:
-        message = await channel.get_message(payload.message_id)
+        message = await channel.fetch_message(payload.message_id)
     except (discord.errors.NotFound, AttributeError, discord.Forbidden):
         return
     guild = message.guild
@@ -3623,9 +3628,9 @@ async def changeraid(ctx, newraid):
                 p_number = str(regionalform("correct", p))
             boss_list.append((((p_name + ' (') + p_number) + ') ') + ''.join(p_type))
         raid_img_url = 'https://raw.githubusercontent.com/eengnr/Meowth/discordpy-v1/images/eggs/{}?cache=0'.format(str(egg_img))
-        raid_message = await channel.get_message(guild_dict[guild.id]['raidchannel_dict'][channel.id]['raidmessage'])
+        raid_message = await channel.fetch_message(guild_dict[guild.id]['raidchannel_dict'][channel.id]['raidmessage'])
         report_channel = Meowth.get_channel(raid_message.raw_channel_mentions[0])
-        report_message = await report_channel.get_message(guild_dict[guild.id]['raidchannel_dict'][channel.id]['raidreport'])
+        report_message = await report_channel.fetch_message(guild_dict[guild.id]['raidchannel_dict'][channel.id]['raidreport'])
         oldembed = raid_message.embeds[0]
         raid_embed = discord.Embed(title=oldembed.title, url=oldembed.url, colour=message.guild.me.colour)
         if len(raid_info['raid_eggs'][newraid]['pokemon']) > 1:
@@ -4622,8 +4627,8 @@ async def _eggassume(args, raid_channel, author=None):
     egglevel = eggdetails['egglevel']
     manual_timer = eggdetails['manual_timer']
     weather = eggdetails.get('weather', None)
-    egg_report = await report_channel.get_message(eggdetails['raidreport'])
-    raid_message = await raid_channel.get_message(eggdetails['raidmessage'])
+    egg_report = await report_channel.fetch_message(eggdetails['raidreport'])
+    raid_message = await raid_channel.fetch_message(eggdetails['raidmessage'])
     entered_raid = re.sub('[\\@]', '', args.lower().lstrip('assume').lstrip(' '))
     entered_raid = get_name(entered_raid).lower() if entered_raid.isdigit() else entered_raid
     rgx = '[^a-zA-Z0-9äöüÄÖÜßé\-\u2640\u2642]'
@@ -4719,7 +4724,7 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
     trainer_dict = eggdetails['trainer_dict']
     egg_address = eggdetails['address']
     weather = eggdetails.get('weather', None)
-    raid_message = await raid_channel.get_message(eggdetails['raidmessage'])
+    raid_message = await raid_channel.fetch_message(eggdetails['raidmessage'])
     if not reportcitychannel:
         async for message in raid_channel.history(limit=500, reverse=True):
             if message.author.id == guild.me.id:
@@ -4729,7 +4734,7 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
                     break
     if reportcitychannel:
         try:
-            egg_report = await reportcitychannel.get_message(eggdetails['raidreport'])
+            egg_report = await reportcitychannel.fetch_message(eggdetails['raidreport'])
         except (discord.errors.NotFound, discord.errors.HTTPException):
             egg_report = None
     starttime = eggdetails.get('starttime',None)
@@ -5393,8 +5398,8 @@ async def _timerset(raidchannel, exptime):
     await raidchannel.send(timerstr)
     await raidchannel.edit(topic=topicstr)
     report_channel = Meowth.get_channel(guild_dict[guild.id]['raidchannel_dict'][raidchannel.id]['reportcity'])
-    raidmsg = await raidchannel.get_message(guild_dict[guild.id]['raidchannel_dict'][raidchannel.id]['raidmessage'])
-    reportmsg = await report_channel.get_message(guild_dict[guild.id]['raidchannel_dict'][raidchannel.id]['raidreport'])
+    raidmsg = await raidchannel.fetch_message(guild_dict[guild.id]['raidchannel_dict'][raidchannel.id]['raidmessage'])
+    reportmsg = await report_channel.fetch_message(guild_dict[guild.id]['raidchannel_dict'][raidchannel.id]['raidreport'])
     embed = raidmsg.embeds[0]
     embed.set_field_at(3, name=embed.fields[3].name, value=endtime, inline=True)
     try:
@@ -5513,8 +5518,8 @@ async def starttime(ctx,*,start_time=""):
             nextgroup = start.strftime(_('%B %d at %I:%M %p (%H:%M)'))
         await channel.send(_('Meowth! The current start time has been set to: **{starttime}**').format(starttime=nextgroup))
         report_channel = Meowth.get_channel(rc_d['reportcity'])
-        raidmsg = await channel.get_message(rc_d['raidmessage'])
-        reportmsg = await report_channel.get_message(rc_d['raidreport'])
+        raidmsg = await channel.fetch_message(rc_d['raidmessage'])
+        reportmsg = await report_channel.fetch_message(rc_d['raidreport'])
         embed = raidmsg.embeds[0]
         embed.set_field_at(2, name=embed.fields[2].name, value=nextgroup, inline=True)
         try:
@@ -5547,7 +5552,7 @@ async def location(ctx):
         guild = message.guild
         channel = message.channel
         rc_d = guild_dict[guild.id]['raidchannel_dict']
-        raidmsg = await channel.get_message(rc_d[channel.id]['raidmessage'])
+        raidmsg = await channel.fetch_message(rc_d[channel.id]['raidmessage'])
         location = rc_d[channel.id]['address']
         report_channel = Meowth.get_channel(rc_d[channel.id]['reportcity'])
         oldembed = raidmsg.embeds[0]
@@ -5585,8 +5590,8 @@ async def new(ctx,*,content):
         report_city = report_channel.name
         details = ' '.join(location_split)
         newloc = create_gmaps_query(details, report_channel, type=guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['type'])
-        oldraidmsg = await message.channel.get_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidmessage'])
-        oldreportmsg = await report_channel.get_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidreport'])
+        oldraidmsg = await message.channel.fetch_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidmessage'])
+        oldreportmsg = await report_channel.fetch_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidreport'])
         oldembed = oldraidmsg.embeds[0]
         newembed = discord.Embed(title=oldembed.title, url=newloc, colour=message.guild.me.colour)
         for field in oldembed.fields:
@@ -5877,7 +5882,7 @@ async def duplicate(ctx):
                 await rusure.delete()
                 await channel.send(_('Duplicate Confirmed'))
                 logger.info((('Duplicate Report - Channel Expired - ' + channel.name) + ' - Last Report by ') + author.name)
-                raidmsg = await channel.get_message(rc_d['raidmessage'])
+                raidmsg = await channel.fetch_message(rc_d['raidmessage'])
                 reporter = raidmsg.mentions[0]
                 try:
                     if 'egg' in raidmsg.content:
@@ -5928,14 +5933,14 @@ async def counters(ctx, *, args = None):
                     user = arg
                     break
         try:
-            ctrsmessage = await channel.get_message(guild_dict[guild.id]['raidchannel_dict'][channel.id].get('ctrsmessage',None))
+            ctrsmessage = await channel.fetch_message(guild_dict[guild.id]['raidchannel_dict'][channel.id].get('ctrsmessage',None))
         except (discord.errors.NotFound, discord.errors.Forbidden, discord.errors.HTTPException):
             pass
         pkmn = guild_dict[guild.id]['raidchannel_dict'][channel.id].get('pokemon', None)
         if pkmn:
             if not user:
                 try:
-                    ctrsmessage = await channel.get_message(guild_dict[guild.id]['raidchannel_dict'][channel.id].get('ctrsmessage',None))
+                    ctrsmessage = await channel.fetch_message(guild_dict[guild.id]['raidchannel_dict'][channel.id].get('ctrsmessage',None))
                     ctrsembed = ctrsmessage.embeds[0]
                     ctrsembed.remove_field(6)
                     ctrsembed.remove_field(6)
@@ -6221,7 +6226,7 @@ async def weather(ctx, *, weather):
             if str(get_level(pkmn)) in guild_dict[ctx.guild.id]['configure_dict']['counters']['auto_levels']:
                 ctrs_dict = await _get_generic_counters(ctx.guild,pkmn,weather.lower())
                 try:
-                    ctrsmessage = await ctx.channel.get_message(guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['ctrsmessage'])
+                    ctrsmessage = await ctx.channel.fetch_message(guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['ctrsmessage'])
                     moveset = guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['moveset']
                     newembed = ctrs_dict[moveset]['embed']
                     await ctrsmessage.edit(embed=newembed)
@@ -6670,11 +6675,11 @@ async def _edit_party(channel, author=None):
     channel_dict["total"] = channel_dict["maybe"] + channel_dict["coming"] + channel_dict["here"]
     reportchannel = Meowth.get_channel(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['reportcity'])
     try:
-        reportmsg = await reportchannel.get_message(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['raidreport'])
+        reportmsg = await reportchannel.fetch_message(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['raidreport'])
     except:
         pass
     try:
-        raidmsg = await channel.get_message(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['raidmessage'])
+        raidmsg = await channel.fetch_message(guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['raidmessage'])
     except:
         async for message in channel.history(limit=500, reverse=True):
             if author and message.author.id == channel.guild.me.id:
@@ -6887,8 +6892,8 @@ async def starting(ctx, team: str = ''):
     if starttime:
         starting_str += '\n\nDie Startzeit wurde auch gelöscht, weitere Gruppen können eine neue Startzeit mit **!starttime hh:MM** setzen.'
         report_channel = Meowth.get_channel(guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['reportcity'])
-        raidmsg = await ctx.channel.get_message(guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['raidmessage'])
-        reportmsg = await report_channel.get_message(guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['raidreport'])
+        raidmsg = await ctx.channel.fetch_message(guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['raidmessage'])
+        reportmsg = await report_channel.fetch_message(guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['raidreport'])
         embed = raidmsg.embeds[0]
         embed.set_field_at(2, name=_("**Next Group**"), value=_("Set with **!starttime**"), inline=True)
         try:
@@ -7464,7 +7469,7 @@ async def _researchlist(ctx):
     for questid in research_dict:
         if research_dict[questid]['reportchannel'] == ctx.message.channel.id:
             try:
-                questreportmsg = await ctx.message.channel.get_message(questid)
+                questreportmsg = await ctx.message.channel.fetch_message(questid)
                 questauthor = ctx.channel.guild.get_member(research_dict[questid]['reportauthor'])
                 if questauthor:
                     if len(questmsg) < 1500:
@@ -7500,7 +7505,7 @@ async def _wildlist(ctx):
     for wildid in wild_dict:
         if wild_dict[wildid]['reportchannel'] == ctx.message.channel.id:
             try:
-                wildreportmsg = await ctx.message.channel.get_message(wildid)
+                wildreportmsg = await ctx.message.channel.fetch_message(wildid)
                 wildauthor = ctx.channel.guild.get_member(wild_dict[wildid]['reportauthor'])
                 if wildauthor:
                     if len(wildmsg) < 1500:

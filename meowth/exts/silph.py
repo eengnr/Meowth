@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from meowth import utils
 
-class SilphBadge:
+class SilphBadge(commands.Cog):
 
     __slots__ = ('count', '_awarded', 'slug', 'name', 'description', 'image_url')
 
@@ -36,7 +36,7 @@ class SilphBadge:
             date = date + datetime.timedelta(hours=utc_offset)
         return date.date().isoformat()
 
-class SilphCheckin:
+class SilphCheckin(commands.Cog):
 
     __slots__ = ('name', 'description', 'image_url', '_is_global', '_start',
                  '_end', '_created')
@@ -72,7 +72,7 @@ class SilphCheckin:
             date = date + datetime.timedelta(hours=utc_offset)
         return date.date().isoformat()
 
-class SilphCard:
+class SilphCard(commands.Cog):
 
     __slots__ = ('id', 'home_region', 'team', 'title', 'playstyle', 'level',
                  'avatar_url', 'silph_name', 'game_name', 'url',
@@ -260,7 +260,7 @@ class SilphCard:
             return None
         return cls(silph_user, data)
 
-class SilphTrainer:
+class SilphTrainer(commands.Cog):
     def __init__(self, silph_user):
         self.name = silph_user
         self.card = None
@@ -275,7 +275,7 @@ class SilphTrainer:
         await instance.load_card_data()
         return instance
 
-class Silph:
+class Silph(commands.Cog):
     """Silph intergrations."""
     def __init__(self, bot):
         self.bot = bot

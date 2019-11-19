@@ -9,7 +9,7 @@ from meowth import utils, checks
 from meowth.exts import pokemon
 
 
-class Trade:
+class Trade(commands.Cog):
 
     icon_url = ("https://raw.githubusercontent.com/FoglyOgly/Meowth/"
                 "discordpy-v1/images/misc/trade_icon_small.png")
@@ -382,7 +382,7 @@ class Trade:
         except (KeyError, discord.HTTPException):
             pass
 
-class Trading:
+class Trading(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         for guild_id in self.bot.guild_dict:
