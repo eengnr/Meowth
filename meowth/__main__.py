@@ -383,9 +383,10 @@ def regionalform(action, number):
 
     start_alola = 891
     start_galar = 909
+    start_mega = 922
 
     if action == "check":
-        # Alola/Galar hack, added after last official pokémon
+        # Alola/Galar/Mega hack, added after last official pokémon
         if number >= start_alola:
             return True
         else:
@@ -393,8 +394,14 @@ def regionalform(action, number):
     if action == "region":
         if (number >= start_alola) and (number < start_galar):
             return "a"
-        elif number >= start_galar:
+        elif (number >= start_galar) and (number < start_mega):
             return "g"
+        elif (number == 923) or (number == 932):
+            return "mx"
+        elif (number == 924) or (number == 933):
+            return "my"
+        elif (number >= start_mega):
+            return "m"
         else:
             return ""
     if action == "correct":
@@ -429,7 +436,56 @@ def regionalform(action, number):
             918: 554,
             919: 555,
             920: 562,
-            921: 618
+            921: 618,
+            922: 3,
+            923: 6,
+            924: 6,
+            925: 9,
+            926: 15,
+            927: 18,
+            928: 65,
+            929: 80,
+            930: 94,
+            931: 115,
+            932: 127,
+            933: 130,
+            934: 142,
+            935: 150,
+            936: 150,
+            937: 181,
+            938: 208,
+            939: 212,
+            940: 214,
+            941: 229,
+            942: 248,
+            943: 254,
+            944: 257,
+            945: 260,
+            946: 282,
+            947: 302,
+            948: 303,
+            949: 306,
+            950: 308,
+            951: 310,
+            952: 319,
+            953: 323,
+            954: 334,
+            955: 354,
+            956: 359,
+            957: 362,
+            958: 373,
+            959: 376,
+            960: 380,
+            961: 381,
+            962: 384,
+            963: 428,
+            964: 445,
+            965: 448,
+            966: 460,
+            967: 475,
+            968: 531,
+            969: 719
+
         }
         return regionalformmap.get(number, number)
 
@@ -4293,7 +4349,7 @@ async def raid(ctx,pokemon,*,location:commands.clean_content(fix_channel_mention
         new_channel = await _raidegg(ctx.message, content)
     else:
         #Alola hack necessary
-        new_channel = await _raid(ctx.message, content.replace("Alola ","Alola_").replace("Galar ", "Galar_"))
+        new_channel = await _raid(ctx.message, content.replace("Alola ","Alola_").replace("Galar ", "Galar_").replace("Mega ", "Mega_"))
     ctx.raid_channel = new_channel
 
 async def _raid(message, content):
@@ -6267,7 +6323,7 @@ async def interested(ctx, *, teamcounts: str=None):
         pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) in re.sub(rgx, '', teamcounts.lower())), None)
     if pkmn_match and guild_dict[ctx.guild.id]['raidchannel_dict'][ctx.channel.id]['type'] == "egg":
         entered_interest = []
-        # Alola hack: replace space with underscore to have one word
+        # Alola hack: replace space with underscore to have one word (only necessary for english, not added yet for galarian/mega)
         teamcounts = teamcounts.lower().replace("alola ", "alola_")
         for word in re.split(' |,', teamcounts.lower()):
             # Alola hack undo
