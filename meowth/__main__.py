@@ -385,6 +385,8 @@ def regionalform(action, number):
     start_galar = 909
     start_mega = 922
 
+    number = int(number)
+
     if action == "check":
         # Alola/Galar/Mega hack, added after last official pokémon
         if number >= start_alola:
