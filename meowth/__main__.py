@@ -654,7 +654,7 @@ def get_raidtext(type, pkmn, level, member, channel):
             roletest = _("{pokemon} - ").format(pokemon=role.mention)
             raidtext = _("{roletest}Meowth! {pkmn} raid reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(roletest=roletest, pkmn=pkmn.title(), member=member.mention, channel=channel.mention)
     elif type == "egg":
-        raidtext = _("Meowth! Level {level} raid egg reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(level=level, member=member.mention, channel=channel.mention)
+        raidtext = _("Meowth! Level {level} raid egg reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(level=level.title(), member=member.mention, channel=channel.mention)
     elif type == "exraid":
         raidtext = _("Meowth! EX raid reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(member=member.mention, channel=channel.mention)
     return raidtext
@@ -4347,11 +4347,11 @@ async def raid(ctx,pokemon,*,location:commands.clean_content(fix_channel_mention
     Als Zeit können die Minuten bis zum Raidende/Schlüpfen des Eis angegeben werden
     oder eine Uhrzeit."""
     content = f"{pokemon} {location}"
-    if pokemon.isdigit():
+    if (pokemon.isdigit()) or (pokemon.lower() == "mega"):
         new_channel = await _raidegg(ctx.message, content)
     else:
         #Alola hack necessary
-        new_channel = await _raid(ctx.message, content.replace("Alola ","Alola_").replace("Galar ", "Galar_").replace("Mega ", "Mega_"))
+        new_channel = await _raid(ctx.message, content.replace("Alola ","Alola_").replace("Galar ", "Galar_").replace("Mega ", "Mega_").replace(" X ", "_X ").replace(" Y ","_Y "))
     ctx.raid_channel = new_channel
 
 async def _raid(message, content):
@@ -4547,8 +4547,8 @@ async def _raidegg(message, content):
     if len(raidegg_split) <= 1:
         await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raidegg <level> <location>**'))
         return
-    if raidegg_split[0].isdigit():
-        egg_level = int(raidegg_split[0])
+    if (raidegg_split[0].isdigit()) or (raidegg_split[0].lower() == "mega"):
+        egg_level = raidegg_split[0]
         del raidegg_split[0]
     else:
         await message.channel.send(_('Meowth! Give more details when reporting! Use at least: **!raidegg <level> <location>**. Type **!help** raidegg for more info.'))
@@ -4570,8 +4570,12 @@ async def _raidegg(message, content):
             return
         del raidegg_split[(- 1)]
     if raidexp is not False:
-        if _timercheck(raidexp, raid_info['raid_eggs'][str(egg_level)]['hatchtime']):
-            await message.channel.send(_("Meowth...that's too long. Level {raidlevel} Raid Eggs currently last no more than {hatchtime} minutes...").format(raidlevel=egg_level, hatchtime=raid_info['raid_eggs'][str(egg_level)]['hatchtime']))
+        try:
+            if _timercheck(raidexp, raid_info['raid_eggs'][str(egg_level).lower()]['hatchtime']):
+                await message.channel.send(_("Meowth...that's too long. Level {raidlevel} Raid Eggs currently last no more than {hatchtime} minutes...").format(raidlevel=str(egg_level).title(), hatchtime=raid_info['raid_eggs'][str(egg_level).lower()]['hatchtime']))
+                return
+        except:
+            await message.channel.send(_('Meowth! Raid egg levels are only from 1-5 or Mega! You gave {the_level} instead!').format(the_level=str(egg_level).title()))
             return
     raid_details = ' '.join(raidegg_split)
     raid_details = raid_details.strip()
@@ -4603,11 +4607,11 @@ async def _raidegg(message, content):
             gym_info = _("**Name:** {0}\n**Notes:** {1}").format(raid_details, gym_note)
     else:
         raid_gmaps_link = create_gmaps_query(raid_details, message.channel, type="raid")
-    if (egg_level > 6) or (egg_level == 0):
-        await message.channel.send(_('Meowth! Raid egg levels are only from 1-6!'))
+    if ((str(egg_level) != "1") and (str(egg_level) != "2") and (str(egg_level) != "3") and (str(egg_level) != "4") and (str(egg_level) != "5") and (str(egg_level).lower() != "mega")):
+        await message.channel.send(_('Meowth! Raid egg levels are only from 1-5 or Mega! You gave {the_level} instead!').format(the_level=str(egg_level).title()))
         return
     else:
-        egg_level = str(egg_level)
+        egg_level = str(egg_level).lower()
         egg_info = raid_info['raid_eggs'][egg_level]
         egg_img = egg_info['egg_img']
         boss_list = []
@@ -4640,12 +4644,12 @@ async def _raidegg(message, content):
         raid_embed.add_field(name=_('**Hatches:**'), value=_('Set with **!timerset**'), inline=True)
         raid_embed.set_footer(text=_('Reported by @{author} - {timestamp}').format(author=message.author.display_name, timestamp=timestamp), icon_url=message.author.avatar_url_as(format=None, static_format='jpg', size=32))
         raid_embed.set_thumbnail(url=raid_img_url)
-        raidreport = await message.channel.send(content=_('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(level=egg_level, member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention), embed=raid_embed)
+        raidreport = await message.channel.send(content=_('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(level=egg_level.title(), member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention), embed=raid_embed)
         await asyncio.sleep(1)
         loc_details=raid_details
         if gym_note != '':
             loc_details = loc_details + ' ' + gym_note
-        raidmsg = _("Meowth! Level {level} raid egg reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(level=egg_level, member=message.author.mention, citychannel=message.channel.mention, location_details=loc_details)
+        raidmsg = _("Meowth! Level {level} raid egg reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(level=egg_level.title(), member=message.author.mention, citychannel=message.channel.mention, location_details=loc_details)
         raidmessage = await raid_channel.send(content=raidmsg, embed=raid_embed)
         await raidmessage.add_reaction('\u2754')
         await raidmessage.pin()
@@ -4814,7 +4818,7 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
     elif get_number(entered_raid) not in raid_info['raid_eggs'][str(egglevel)]['pokemon']:
         await raid_channel.send(_('Meowth! The Pokemon {pokemon} does not hatch from level {level} raid eggs!').format(pokemon=entered_raid.title(), level=egglevel))
         return
-    if (egglevel.isdigit() and int(egglevel) > 0) or egglevel == 'EX':
+    if (str(egglevel) == "1" or str(egglevel) == "2" or str(egglevel) == "3" or str(egglevel) == "4" or str(egglevel) == "5" or str(egglevel).lower() == "mega" or egglevel == 'EX'):
         raidexp = eggdetails['exp'] + 60 * raid_info['raid_eggs'][str(egglevel)]['raidtime']
     else:
         raidexp = eggdetails['exp']
@@ -4828,7 +4832,7 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
         await raid_channel.edit(topic="")
         event_loop.create_task(expiry_check(raid_channel))
         return
-    if egglevel.isdigit():
+    if (str(egglevel) == "1" or str(egglevel) == "2" or str(egglevel) == "3" or str(egglevel) == "4" or str(egglevel) == "5" or str(egglevel).lower() == "mega"):
         hatchtype = 'raid'
         raidreportcontent = _('Meowth! The egg has hatched into a {pokemon} raid! Details: {location_details}. Coordinate in {raid_channel}').format(pokemon=entered_raid.title(), location_details=egg_address, raid_channel=raid_channel.mention)
         raidmsg = _("Meowth! The egg reported by {member} in {citychannel} hatched into a {pokemon} raid! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(member=raid_messageauthor.mention, citychannel=reportcitychannel.mention, pokemon=entered_raid.title(), location_details=egg_address)
