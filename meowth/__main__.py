@@ -4603,8 +4603,8 @@ async def _raidegg(message, content):
             gym_info = _("**Name:** {0}\n**Notes:** {1}").format(raid_details, gym_note)
     else:
         raid_gmaps_link = create_gmaps_query(raid_details, message.channel, type="raid")
-    if (egg_level > 5) or (egg_level == 0):
-        await message.channel.send(_('Meowth! Raid egg levels are only from 1-5!'))
+    if (egg_level > 6) or (egg_level == 0):
+        await message.channel.send(_('Meowth! Raid egg levels are only from 1-6!'))
         return
     else:
         egg_level = str(egg_level)

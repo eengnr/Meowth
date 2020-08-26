@@ -65,6 +65,18 @@
             "hatchtime": 60,
             "raidtime": 45
         },
+        "6": {
+            "egg": "mega",
+            "egg_img": "6.png",
+            "pokemon": [
+                922,
+                923,
+                924,
+                925
+            ],
+            "hatchtime": 60,
+            "raidtime": 45
+        },
         "EX": {
             "egg": "EX",
             "egg_img": "EX.png",
