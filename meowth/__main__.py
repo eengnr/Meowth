@@ -3717,7 +3717,7 @@ async def changeraid(ctx, newraid):
             await report_message.edit(new_content=report_message.content, embed=raid_embed, content=report_message.content)
         except (discord.errors.NotFound, AttributeError):
             pass
-        await channel.edit(name=raid_channel_name, topic=channel.topic)
+        await channel.edit(name=raid_channel_name)
     elif newraid and not newraid.isdigit():
         # What a hack, subtract raidtime from exp time because _eggtoraid will add it back
         egglevel = guild_dict[guild.id]['raidchannel_dict'][channel.id]['egglevel']
@@ -4829,7 +4829,6 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
         guild_dict[raid_channel.guild.id]['raidchannel_dict'][raid_channel.id]['type'] = 'exraid'
         guild_dict[raid_channel.guild.id]['raidchannel_dict'][raid_channel.id]['egglevel'] = '0'
         await raid_channel.send(_("The event has started!"), embed=oldembed)
-        await raid_channel.edit(topic="")
         event_loop.create_task(expiry_check(raid_channel))
         return
     if (str(egglevel) == "1" or str(egglevel) == "2" or str(egglevel) == "3" or str(egglevel) == "4" or str(egglevel) == "5" or str(egglevel).lower() == "mega"):
@@ -4869,7 +4868,7 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
         raid_embed.add_field(name=_('**Expires:**'), value=end.strftime(_('%B %d at %I:%M %p (%H:%M)')), inline=True)
     raid_embed.set_footer(text=oldembed.footer.text, icon_url=oldembed.footer.icon_url)
     raid_embed.set_thumbnail(url=raid_img_url)
-    await raid_channel.edit(name=raid_channel_name, topic=end.strftime(_('Ends on %B %d at %I:%M %p (%H:%M)')))
+    await raid_channel.edit(name=raid_channel_name)
     trainer_list = []
     trainer_dict = copy.deepcopy(guild_dict[raid_channel.guild.id]['raidchannel_dict'][raid_channel.id]['trainer_dict'])
     for trainer in trainer_dict.keys():
@@ -5458,7 +5457,6 @@ async def _timerset(raidchannel, exptime):
         endtime = end.strftime(_('%B %d at %I:%M %p (%H:%M)'))
     timerstr = await print_raid_timer(raidchannel)
     await raidchannel.send(timerstr)
-    await raidchannel.edit(topic=topicstr)
     report_channel = Meowth.get_channel(guild_dict[guild.id]['raidchannel_dict'][raidchannel.id]['reportcity'])
     raidmsg = await raidchannel.fetch_message(guild_dict[guild.id]['raidchannel_dict'][raidchannel.id]['raidmessage'])
     reportmsg = await report_channel.fetch_message(guild_dict[guild.id]['raidchannel_dict'][raidchannel.id]['raidreport'])
