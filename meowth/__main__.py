@@ -4351,7 +4351,7 @@ async def raid(ctx,pokemon,*,location:commands.clean_content(fix_channel_mention
         new_channel = await _raidegg(ctx.message, content)
     else:
         #Alola hack necessary
-        new_channel = await _raid(ctx.message, content.replace("Alola ","Alola_").replace("Galar ", "Galar_").replace("Mega ", "Mega_").replace(" X ", "_X ").replace(" Y ","_Y "))
+        new_channel = await _raid(ctx.message, content.replace("Alolan ","Alolan_").replace("Galarian ", "Galarian_").replace("Mega ", "Mega_").replace(" X ", "_X ").replace(" Y ","_Y "))
     ctx.raid_channel = new_channel
 
 async def _raid(message, content):
