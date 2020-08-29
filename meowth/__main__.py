@@ -4347,8 +4347,8 @@ async def raid(ctx,pokemon,*,location:commands.clean_content(fix_channel_mention
     Als Zeit können die Minuten bis zum Raidende/Schlüpfen des Eis angegeben werden
     oder eine Uhrzeit."""
     content = f"{pokemon} {location}"
-    if (pokemon.isdigit()) or (pokemon.lower() == "mega"):
-        new_channel = await _raidegg(ctx.message, content)
+    if (pokemon.isdigit()) or (pokemon == "mega") or (pokemon.lower() == "m") or (pokemon == "\U0001F9EC"):
+        new_channel = await _raidegg(ctx.message, content.replace("m ","mega ").replace("\U0001F9EC ","mega "))
     else:
         #Alola hack necessary
         new_channel = await _raid(ctx.message, content.replace("Alolan ","Alolan_").replace("Galarian ", "Galarian_").replace("Mega ", "Mega_").replace(" X ", "_X ").replace(" Y ","_Y "))
