@@ -4469,7 +4469,7 @@ async def _raid(message, content):
             gym_info = _("**Name:** {0}\n**Notes:** {1}").format(raid_details, gym_note)
     else:
         raid_gmaps_link = create_gmaps_query(raid_details, message.channel, type="raid")
-    raid_channel_name = (entered_raid + '-') + sanitize_channel_name(raid_details)
+    raid_channel_name = ('\U0001F608-' + entered_raid + '-') + sanitize_channel_name(raid_details)
     raid_channel_category = get_category(message.channel, get_level(entered_raid), category_type="raid")
     raid_channel = await message.guild.create_text_channel(raid_channel_name, overwrites=dict(message.channel.overwrites), category=raid_channel_category)
     ow = raid_channel.overwrites_for(raid_channel.guild.default_role)
@@ -4858,7 +4858,7 @@ async def _eggtoraid(entered_raid, raid_channel, author=None):
             invitemsgstr2 = ""
         raidreportcontent = _('Meowth! The EX egg has hatched into a {pokemon} raid! Details: {location_details}. {invitemsgstr} coordinate in {raid_channel}').format(pokemon=entered_raid.title(), location_details=egg_address, invitemsgstr=invitemsgstr,raid_channel=raid_channel.mention)
         raidmsg = _("Meowth! {pokemon} EX raid reported by {member} in {citychannel}! Details: {location_details}. Coordinate here{invitemsgstr2}!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(pokemon=entered_raid.title(), member=raid_messageauthor.mention, citychannel=reportcitychannel.mention, location_details=egg_address, invitemsgstr2=invitemsgstr2)
-    raid_channel_name = (entered_raid + '-') + sanitize_channel_name(egg_address)
+    raid_channel_name = ('\U0001F608-' + entered_raid + '-') + sanitize_channel_name(egg_address)
     raid = discord.utils.get(raid_channel.guild.roles, name=entered_raid)
     if raid == None:
         roletest = ""
