@@ -654,7 +654,7 @@ def get_raidtext(type, pkmn, level, member, channel):
             roletest = _("{pokemon} - ").format(pokemon=role.mention)
             raidtext = _("{roletest}Meowth! {pkmn} raid reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(roletest=roletest, pkmn=pkmn.title(), member=member.mention, channel=channel.mention)
     elif type == "egg":
-        raidtext = _("Meowth! Level {level} raid egg reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(level=level.title(), member=member.mention, channel=channel.mention)
+        raidtext = _("Meowth! Level {level} raid egg reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(level=level.replace("1", _("normal ")).replace("3", _("rare ")).replace("5", _("legendary ")).replace("mega", _("mega ")), member=member.mention, channel=channel.mention)
     elif type == "exraid":
         raidtext = _("Meowth! EX raid reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(member=member.mention, channel=channel.mention)
     return raidtext
@@ -4342,15 +4342,28 @@ async def _wild(message, content):
 async def raid(ctx,pokemon,*,location:commands.clean_content(fix_channel_mentions=True)="", weather=None, timer=None):
     """Meldet einen Raid oder ein Raid-Ei..
 
-    Verwendung: !raid <Pokémon/Raid-Level> <Arena> [Wetter] [Zeit]
+    Verwendung: !raid <Pokémon/Raid-Stufe> <Arena> [Wetter] [Zeit]
+
+    Folgende Raid-Stufen sind möglich:
+    Normal: 1, n, normal, \U0001F7E3
+    Selten: 3, s, selten, \U0001F7E1
+    Legendär: 5, l, legendär, \u26AB
+    Mega: m, mega, \u26AA
+
     Mauzi erstellt einen eigenen Kanal für die Abstimmung zu diesem Raid.
     Als Zeit können die Minuten bis zum Raidende/Schlüpfen des Eis angegeben werden
     oder eine Uhrzeit."""
     content = f"{pokemon} {location}"
-    if (pokemon.isdigit()) or (pokemon == "mega") or (pokemon.lower() == "m") or (pokemon == "\U0001F9EC"):
-        new_channel = await _raidegg(ctx.message, content.replace("m ","mega ").replace("\U0001F9EC ","mega "))
+    # Allow other keywords intead of raid levels
+    if (pokemon.isdigit()) or (pokemon == "mega") or (pokemon == "normal") or (pokemon == "selten") or (pokemon == "rare") or (pokemon == "legendär") or (pokemon == "legendary") or (pokemon.lower() == "m") or (pokemon.lower() == "n") or (pokemon.lower() == "s") or (pokemon.lower() == "r") or (pokemon.lower() == "l") or (pokemon == "\u26AA") or (pokemon == "\u26AB") or (pokemon == "\U0001F7E3") or (pokemon == "\U0001F7E1"):
+        # Replace keywords to internally used raid levels
+        content = re.sub("^(n|normal|\U0001F7E3) ", "1 ", content)
+        content = re.sub("^(s|r|selten|rare|\U0001F7E1) ", "3 ", content)
+        content = re.sub("^(l|legendary|legendär|\u26AB) ", "5 ", content)
+        content = re.sub("^(m|\u26AA) ", "mega ", content)
+        new_channel = await _raidegg(ctx.message, content)
     else:
-        #Alola hack necessary
+        #Replace potential spaces in pokémon names, will be sorted out with fuzzy matching
         new_channel = await _raid(ctx.message, content.replace("Alolan ","Alolan_").replace("Galarian ", "Galarian_").replace("Mega ", "Mega_").replace(" X ", "_X ").replace(" Y ","_Y "))
     ctx.raid_channel = new_channel
 
@@ -4622,7 +4635,7 @@ async def _raidegg(message, content):
             if regionalform("check", p):
                 p_number = str(regionalform("correct", p))
             boss_list.append((((p_name + ' (') + p_number) + ') ') + ''.join(p_type))
-        raid_channel_name = _('level-{egg_level}-egg-').format(egg_level=egg_level)
+        raid_channel_name = _('level-{egg_level}-egg-').format(egg_level=egg_level.replace("1","\U0001F7E3").replace("3","\U0001F7E1").replace("5","\u26AB").replace("mega","\u26AA"))
         raid_channel_name += sanitize_channel_name(raid_details)
         raid_channel_category = get_category(message.channel, egg_level, category_type="raid")
         raid_channel = await message.guild.create_text_channel(raid_channel_name, overwrites=dict(message.channel.overwrites), category=raid_channel_category)
@@ -4644,12 +4657,12 @@ async def _raidegg(message, content):
         raid_embed.add_field(name=_('**Hatches:**'), value=_('Set with **!timerset**'), inline=True)
         raid_embed.set_footer(text=_('Reported by @{author} - {timestamp}').format(author=message.author.display_name, timestamp=timestamp), icon_url=message.author.avatar_url_as(format=None, static_format='jpg', size=32))
         raid_embed.set_thumbnail(url=raid_img_url)
-        raidreport = await message.channel.send(content=_('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(level=egg_level.title(), member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention), embed=raid_embed)
+        raidreport = await message.channel.send(content=_('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(level=egg_level.replace("1", _("normal ")).replace("3", _("rare ")).replace("5", _("legendary ")).replace("mega", _("mega ")), member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention), embed=raid_embed)
         await asyncio.sleep(1)
         loc_details=raid_details
         if gym_note != '':
             loc_details = loc_details + ' ' + gym_note
-        raidmsg = _("Meowth! Level {level} raid egg reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(level=egg_level.title(), member=message.author.mention, citychannel=message.channel.mention, location_details=loc_details)
+        raidmsg = _("Meowth! Level {level} raid egg reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(level=egg_level.replace("1", _("normal ")).replace("3", _("rare ")).replace("5", _("legendary ")).replace("mega", _("mega ")), member=message.author.mention, citychannel=message.channel.mention, location_details=loc_details)
         raidmessage = await raid_channel.send(content=raidmsg, embed=raid_embed)
         await raidmessage.add_reaction('\u2754')
         await raidmessage.pin()
