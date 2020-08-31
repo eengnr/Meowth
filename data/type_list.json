@@ -3074,6 +3074,7 @@
 	["Grass", "Ice"],
 	["Psychic", "Fighting"],
 	["Normal", "Fairy"],
-	["Rock", "Fairy"]
-
+	["Rock", "Fairy"],
+	["Water"],
+	["Ground", "Fire"]
 ]

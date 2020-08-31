@@ -384,6 +384,7 @@ def regionalform(action, number):
     start_alola = 891
     start_galar = 909
     start_mega = 922
+    start_proto = 970
 
     number = int(number)
 
@@ -402,8 +403,10 @@ def regionalform(action, number):
             return "mx"
         elif (number == 924) or (number == 933):
             return "my"
-        elif (number >= start_mega):
+        elif (number >= start_mega) and (number < start_proto):
             return "m"
+        elif (number >= start_proto):
+            return "p"
         else:
             return ""
     if action == "correct":
@@ -486,8 +489,9 @@ def regionalform(action, number):
             966: 460,
             967: 475,
             968: 531,
-            969: 719
-
+            969: 719,
+            970: 382,
+            971: 383
         }
         return regionalformmap.get(number, number)
 
@@ -4364,7 +4368,7 @@ async def raid(ctx,pokemon,*,location:commands.clean_content(fix_channel_mention
         new_channel = await _raidegg(ctx.message, content)
     else:
         #Replace potential spaces in pokémon names, will be sorted out with fuzzy matching
-        new_channel = await _raid(ctx.message, content.replace("Alolan ","Alolan_").replace("Galarian ", "Galarian_").replace("Mega ", "Mega_").replace(" X ", "_X ").replace(" Y ","_Y "))
+        new_channel = await _raid(ctx.message, content.replace("Alolan ","Alolan_").replace("Galarian ", "Galarian_").replace("Mega ", "Mega_").replace(" X ", "_X ").replace(" Y ","_Y ").replace("Primal ","Primal_"))
     ctx.raid_channel = new_channel
 
 async def _raid(message, content):
